@@ -5,7 +5,7 @@ import { EventType } from './enums';
 export class Display {
   public currentDay: number;
   public rootSim: Sim;
-  public familyName: string;
+  public familyName: string = "Sim";
   public sims: Sim[];
   public events: SimEvent[];
 
@@ -65,6 +65,16 @@ export class Display {
           }
           if (newEvent.parents[1]) {
             newEvent.parents[1].children.push(newEvent.sims[0]);
+          }
+        }
+
+        if (newEvent.type === EventType.Adopt) {
+          newEvent.sims[0].adoptedParents = newEvent.parents;
+          if (newEvent.parents[0]) {
+            newEvent.parents[0].adoptedChilden.push(newEvent.sims[0]);
+          }
+          if (newEvent.parents[1]) {
+            newEvent.parents[1].adoptedChilden.push(newEvent.sims[0]);
           }
         }
       }

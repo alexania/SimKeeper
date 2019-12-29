@@ -1,6 +1,6 @@
 header {
   background: white; /* #33abff; */
-  height: 85px;
+  height: 100px;
   position: fixed;
   left: 0;
   right: 0;
@@ -11,6 +11,10 @@ header {
 
 header .container {
   position: relative;
+}
+
+header #disclaimer {
+  text-align: center;
 }
 
 nav {

@@ -15,6 +15,9 @@ export class AppComponent implements OnInit {
   public display: Display;
   public familyName: string = "Sim";
 
+  public foundSims:Sim[];
+  public foundIndex = 0;
+
   constructor() {
     this.display = new Display(1);
   }
@@ -22,13 +25,33 @@ export class AppComponent implements OnInit {
   ngOnInit() {
   }
 
+  addSimKeyUp(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      const button = document.querySelector(".add-sim") as HTMLButtonElement;
+      button.click();
+    } else {
+      this.findSim(event.target as HTMLInputElement);
+    }
+  }
+
   findSim(findInput: HTMLInputElement) {
     const searchString = findInput.value.toLowerCase();
-    if (searchString && searchString.length > 2) {
-      const foundSims = this.display.sims.filter(t => t.name.toLowerCase().includes(searchString));
-      if (foundSims.length > 0) {
-        document.getElementById(foundSims[0].id).scrollIntoView(false);
+    if (searchString && searchString.length >= 3) {
+      this.foundIndex = 0;
+      this.foundSims = this.display.sims.filter(t => t.name.toLowerCase().includes(searchString));
+      console.log(searchString);
+      console.log(this.foundSims);
+      if (this.foundSims.length > 0) {
+        this.scrollToSim(this.foundSims[this.foundIndex].id);
       }
+    }
+  }
+
+  findNext() {
+    if (this.foundSims && this.foundSims.length > 0) {
+      this.foundIndex = (this.foundSims.length + this.foundIndex + 1) % this.foundSims.length;
+      this.scrollToSim(this.foundSims[this.foundIndex].id);
     }
   }
 
@@ -48,14 +71,6 @@ export class AppComponent implements OnInit {
     allButtons.forEach(button => {
       button.click();
     });
-  }
-
-  addSimEnterKey(event: KeyboardEvent) {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      const button = document.querySelector(".add-sim") as HTMLButtonElement;
-      button.click();
-    }
   }
 
   addSim(nameElement: HTMLInputElement) {

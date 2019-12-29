@@ -19,15 +19,14 @@
       <div class="container">
         <span class="new-sim-header-left">
           <div>
-            <label for="find-sim">Find:</label> <input type="text" class="header-input" (input)="findSim(findInput)"
-              #findInput />
             <button class="btn btn-sm btn-success" (click)="collapseAll()" type="button">-</button>
             <button class="btn btn-sm btn-success" (click)="expandAll()" type="button">+</button>
           </div>
         </span>
         <span class="new-sim-header-right">
-          <input type="text" class="header-input" (keyup)="addSimEnterKey($event)" #newSim />
-          <button class="btn btn-sm btn-success add-sim" (click)="addSim(newSim)" type="button">Add Sim</button>
+          <input type="text" class="header-input" (keyup)="addSimKeyUp($event)" #newSim />
+          <button class="btn btn-sm btn-success" [disabled]="!foundSims || foundSims.length === 0" (click)="findNext()" type="button">Next</button>
+          <button class="btn btn-sm btn-success add-sim" [disabled]="newSim.value.length < 3 || (foundSims && foundSims.length > 0)" (click)="addSim(newSim)" type="button">Add Sim</button>
         </span>
       </div>
     </div>

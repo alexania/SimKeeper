@@ -1,5 +1,5 @@
 .page-header {
-  padding: 30px 0 15px;
+  padding: 40px 0 15px;
   background: #FAFAFA;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
   margin-bottom: 20px;
@@ -15,7 +15,7 @@
 
 .current-day {
   position: absolute;
-  top:50px;
+  top:60px;
   font-weight: 600;
   font-size: 24px;
   margin-bottom: 10px;
@@ -60,7 +60,7 @@
 
 .new-sim-header {
   text-align:right;
-  padding: 60px 0 15px;
+  padding: 70px 0 15px;
   background: #F0F0F0;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
   margin-bottom: 20px;
@@ -83,7 +83,7 @@
 
 .new-sim-header-left {
   display: inline-block;
-  width: 50%;
+  width: 30%;
   text-align: left;
   padding: 0 15px;
 }
@@ -95,7 +95,7 @@
 
 .new-sim-header-right {
   display: inline-block;
-  width: 50%;
+  width: 70%;
   text-align: right;
   padding: 0 15px;
 }
@@ -106,5 +106,5 @@ input.header-input {
 }
 
 #main {
-  margin-top: 250px;
+  margin-top: 260px;
 }

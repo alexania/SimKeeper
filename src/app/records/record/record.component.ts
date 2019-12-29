@@ -15,7 +15,7 @@ export class RecordComponent implements OnInit {
   @Input() public sim: Sim;
 
   public collapsed = true;
-  public ageSpans:number[] = null;
+  public ageSpans: number[] = null;
 
   public stageOptions = Object.keys(Stage).filter(t => t === "0" || +t).map(t => { return { key: t, value: Stage[t] }; });
   public careerOptions = Object.keys(Career).map(t => { return { key: t, value: Career[t] } });
@@ -52,7 +52,12 @@ export class RecordComponent implements OnInit {
 
   getShortString() {
     let r = `<img src="./assets/img/stages/Transparent_${this.getCurrentStageString()}.png" class="stage-image" height="30px" title="${this.getCurrentStageString()}" />`;
-    r += `Born on Day ${this.sim.birthday} to ${this.display.linkSim(this.sim.parents[0])} & ${this.display.linkSim(this.sim.parents[1])}`;
+    r += `Born on Day ${this.sim.birthday} to `;
+    if (this.sim.adoptedParents) {
+      r += `${this.display.linkSim(this.sim.adoptedParents[0])} & ${this.display.linkSim(this.sim.adoptedParents[1])}`;
+    } else {
+      r += `${this.display.linkSim(this.sim.parents[0])} & ${this.display.linkSim(this.sim.parents[1])}`;
+    }
     if (this.sim.deathday !== null) {
       const stage = this.getCurrentStageString();
       r += `<br/>Died on Day ${this.sim.deathday} at stage ${stage}`;
