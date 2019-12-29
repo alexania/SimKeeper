@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { EventType, Place, Stage } from 'src/app/shared/enums';
 import { SimEvent } from 'src/app/shared/event.model';
 import { Sim } from 'src/app/shared/sim.model';

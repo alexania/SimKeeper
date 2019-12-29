@@ -1,4 +1,5 @@
-<app-header [display]="display" (gedComLoaded)="onGedLoad($event)"></app-header>
+<app-header [display]="display" (helpShowed)="showHelp()"></app-header>
+<app-help (helpClosed)="closeHelp()" *ngIf="helpVisible"></app-help>
 <main id="main">
   <section class="single-content">
     <div class="page-header page-header-single">
@@ -10,7 +11,7 @@
           <h1>Family Records</h1>
         </div>        
         <div class="current-day">          
-          <button class="btn btn-sm btn-success" (click)="incrementDay()" type="button">+</button>
+          <button class="btn btn-sm btn-success" title="Increment Current Day" (click)="incrementDay()" type="button">+</button>
           Day <input type="text" class="field-input" [(ngModel)]="display.currentDay" />
         </div>
       </div>
@@ -19,14 +20,14 @@
       <div class="container">
         <span class="new-sim-header-left">
           <div>
-            <button class="btn btn-sm btn-success" (click)="collapseAll()" type="button">-</button>
-            <button class="btn btn-sm btn-success" (click)="expandAll()" type="button">+</button>
+            <button class="btn btn-sm btn-success" title="Collapse All" (click)="collapseAll()" type="button">-</button>
+            <button class="btn btn-sm btn-success" title="Expand All" (click)="expandAll()" type="button">+</button>
           </div>
         </span>
         <span class="new-sim-header-right">
           <input type="text" class="header-input" (keyup)="addSimKeyUp($event)" #newSim />
-          <button class="btn btn-sm btn-success" [disabled]="!foundSims || foundSims.length === 0" (click)="findNext()" type="button">Next</button>
-          <button class="btn btn-sm btn-success add-sim" [disabled]="newSim.value.length < 3 || (foundSims && foundSims.length > 0)" (click)="addSim(newSim)" type="button">Add Sim</button>
+          <button class="btn btn-sm btn-success" [disabled]="!foundSims || foundSims.length === 0" title="Jump to Next Instance" (click)="findNext()" type="button">Next</button>
+          <button class="btn btn-sm btn-success add-sim" [disabled]="newSim.value.length < 3" title="Add a new Sim" (click)="addSim(newSim)" type="button">Add Sim</button>
         </span>
       </div>
     </div>

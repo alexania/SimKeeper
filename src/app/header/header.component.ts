@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewEncapsulation, Input } from '@angular/core';
+import { Component, OnInit, Output, ViewEncapsulation, Input, EventEmitter } from '@angular/core';
 import { Display } from '../shared/display.model';
 
 @Component({
@@ -9,6 +9,7 @@ import { Display } from '../shared/display.model';
 })
 export class HeaderComponent implements OnInit {
 
+  @Output() helpShowed = new EventEmitter();
   @Input() public display: Display;
 
   public menuCollapsed = false;
@@ -19,13 +20,13 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
   }
 
-  public toggleMenu() {
-    this.menuCollapsed = !this.menuCollapsed;
+  public toggleMenu(state:boolean) {
+    this.menuCollapsed = state;
     this.showAgeSpanSelect = false;
   }
 
   public fileLoaded(event: any) {
-    this.toggleMenu();
+    this.toggleMenu(false);
     const file = event.target.files[0];
 
     const fileReader = new FileReader();
@@ -39,12 +40,20 @@ export class HeaderComponent implements OnInit {
   }
 
   public fileSaved() {
-    this.toggleMenu();
+    this.toggleMenu(false);
     this.display.onSave();
   }
 
+  public confirmGedLoad(event: any, gedFileInput: HTMLInputElement) {
+    event.preventDefault();
+    this.toggleMenu(false);
+    const overwrite = window.confirm(`WARNING! This will overwrite all existing records, are you sure you want to continue?`);
+    if (overwrite) {
+      gedFileInput.click();
+    }
+  }
+
   public gedFileLoaded(event: any) {
-    this.toggleMenu();
     const file = event.target.files[0];
 
     const fileReader = new FileReader();
@@ -60,6 +69,11 @@ export class HeaderComponent implements OnInit {
     fileReader.onerror = (error) => {
       console.log(error);
     }
+  }
+
+  public showHelp() {
+    this.toggleMenu(false);
+    this.helpShowed.emit("showHelp");
   }
 
   private mapLine(data: string) {

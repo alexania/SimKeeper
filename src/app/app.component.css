@@ -28,7 +28,7 @@
 
 .family-name-left {
   display: inline-block;
-  width: 40%;
+  width: 45%;
   padding: 0 8px;
   text-align: right;
   line-height: 36px;
@@ -36,7 +36,7 @@
 
 .family-name-right {
   display: inline-block;
-  width: 60%;
+  width: 55%;
   text-align: left;
   line-height: 36px;
 }

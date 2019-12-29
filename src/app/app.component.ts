@@ -18,6 +18,8 @@ export class AppComponent implements OnInit {
   public foundSims:Sim[];
   public foundIndex = 0;
 
+  public helpVisible = true;
+
   constructor() {
     this.display = new Display(1);
   }
@@ -85,6 +87,14 @@ export class AppComponent implements OnInit {
     setTimeout(function () {
       document.getElementById(id).scrollIntoView(false);
     }, 100);
+  }
+
+  closeHelp(data:{ type:string }) {
+    this.helpVisible = false;
+  }
+
+  showHelp(data:{ type:string }) {
+    this.helpVisible = true;
   }
 
   private addSimFromName(name: string) {

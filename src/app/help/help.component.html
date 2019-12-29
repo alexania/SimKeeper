@@ -1,0 +1,131 @@
+<div id="help-dialog">
+  <div id="help-container">
+    <i id="help-close" class="fa fa-close" (click)="closeHelp()"></i>
+    <h1>Quick Start Guide</h1>
+    <ul id="table-of-contents">
+      <li><a href="#get-started">Get Started</a></li>
+      <li><a href="#global-configuration">Global Configuration</a></li>
+      <li><a href="#navigation">Navigation</a></li>
+      <li><a href="#save-and-load">Save and Load</a></li>
+      <li><a href="#sim-editing">Editing a Sim</a></li>
+      <li><a href="#faq">Frequently Asked Questions</a></li>
+    </ul>
+    <div>
+      <h2 id="get-started">Get Started</h2>
+      Start your records either by:<br/><br/>
+      <ul>
+        <li>
+          <b>Adding your first Sim:</b>
+          <ul>
+            <li>Click the "Add Sim" button or press enter.</li>
+            <li>The button will be disabled the name is less than 3 characters long.</li>
+            <li>This text box doubles as search!</li>
+            <li>The first Sim added will be set as the Root Sim and the family name will be set to its surname. (This can be changed afterward, don't stress.)</li>
+          </ul>
+          <img src="./assets/img/help/add-sim.png"/></li>
+        <li>
+          <b>Import a GEDCom file</b>
+          <ul>
+            <li>You can use <a href="https://deaderpool-mccc.com/#/doc/mc_gedcom" target="_blank">MCCC</a> to generate a GedCom.</li>
+            <li><b>This will overwrite the current records.</b></li>
+            <li>The MCCC GedCom file doesn't have a concept of dates or sequence of events, so those won't be imported.</li>
+            <li>It also assumes that all parents were married at some point, so you might have to go delete some marriages.</li>
+            <li>If you're using a GedCom that contains info I'm not using, send it to me and I'll look into updating the import.</li>
+          </ul>
+          <img src="./assets/img/help/load-from-ged.png"/></li>
+      </ul>
+    </div>
+    <div>
+      <h2 id="global-configuration">Global Configuration</h2>
+      Things you can edit:<br/><br/>
+      <ul>
+        <li>
+          <b>The Global Age Spans</b> - this is used to calculate the current stage, it can be overwritten on an individual basis.<br/>
+          <img src="./assets/img/help/change-age-spans.png"/>
+        </li>
+        <li>
+          <b>The Family Name</b> - it will take the first Sim's surname by default but can be changed at any time.<br/>
+          <img src="./assets/img/help/change-family-name.png"/>
+        </li>
+        <li>
+          <b>The current day</b> - either click the + to increment it or edit it manually.<br/>
+          <img src="./assets/img/help/change-current-day.png"/>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h2 id="navigation">Navigation</h2>
+      <ul>
+        <li>
+          <b>Collapse and Expand all records</b> - <u>Be careful</u>, expanding all on large lists will slow things way down.<br/>
+          <img src="./assets/img/help/collapse-and-expand.png"/>
+        </li>
+        <li>
+          <b>Find</b> - start typing to search for a Sim, click "Next" to jump to the next found instance... it's a search bar.<br/>
+          <img src="./assets/img/help/search-sim.png"/>
+        </li>
+        <li>
+          <b>Collapse and Expand individual records.</b><br/>
+          <img src="./assets/img/help/expand-record.png" /><br/>
+          <img src="./assets/img/help/collapse-record.png"/>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h2 id="save-and-load">Save and Load</h2>
+      This site doesn't currently support any form of account or data storage, as such your records needs to be stored locally.
+      <ul>
+        <li>
+          <b>Save and Load</b> - You can save your records to download them as a JSON file. To continue where you left off you can just load that same JSON file.<br/>
+          <img src="./assets/img/help/collapse-and-expand.png"/>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h2 id="sim-editing">Editing a Sim</h2>
+      <img src="./assets/img/help/change-record.png"/><br/>
+      You can change the following things on an individual record (just click on the field you want to edit unless otherwise specified).
+      <ul>
+        <li><b>Unique ID</b> - This needs to be unique.</li>
+        <li><b>Name</b></li>
+        <li><b>Birthday</b> - This can either be changed via the Birthday field or the Birth event under history.</li>
+        <li><b>Stage</b> - Change this if you don't want the stage to be auto calculated.</li>
+        <li><b>Traits</b> - Click to select / deselect Sim traits.</li>
+        <li><b>Career</b></li>
+        <li><b>Place</b></li>
+        <li>
+          <b>History</b>
+          <ul>
+            <li>Date - Click the date value to change it.<br/>
+              <img src="./assets/img/help/change-event-date.png"/></li>
+            <li>Event Details - Click the "Day" text on an event to change other information about it.<br/>
+              <img src="./assets/img/help/change-event-details.png"/></li>
+            <li>Delete Event - If the event is deletable, you can click the red cross to delete it.</li>
+            <li>Add events - click the appropriate button to add an event.</li>
+          </ul>
+        </li>
+        <li><b>Delete Sim</b> - Permanently delete this sim. All references to it will be changed to "Unknown".</li>
+        <li>
+          <b>Configure Sim</b><br/>
+          <img src="./assets/img/help/configure-record.png"/>
+          <ul>
+            <li>Root Sim - Click to set this Sim as the root sim. The root sim will always be at the top of the list.</li>
+            <li>Completed - You can check this to mark this Sim as completed (all info is filled in), this will colour the record green.</li>
+            <li>Age Spans - You can override the Global Age Spans (see <a href="#global-configuration">Global Configuration</a>) for an individual sim. Click to open/close.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h2 id="faq">Frequently Asked Questions</h2>
+      <dl>
+        <dt>How do I know what day it is in game?</dt>
+        <dd>I haven't actually found a way to do this. Since I started these records mid-game I guesstimated it based on the age spans (I use the <a href="http://modthesims.info/d/576053/show-search-sim-info-mod.html" target="_blank">Sim Info mod</a> to work out the sim's age).<br/>
+          If you're starting the records off at the beginning it's easier so long as you remember to increment the day every in-game midnight. If you don't want to use the "Day" functionality, just ignore it, override the stages and use it to order events.</dd>
+        <dt>Can I change the Sim portraits?</dt>
+        <dd>For the moment no. Since I'm not storing any info there's no real way of uploading images.<br/>
+        Two ways I can implement this is to either provide a selection of preset images to choose from, or allow you to provide a url to an image hosted somewhere else. Let me know which method you'd prefer.</dd>
+      </dl>
+    </div>
+  </div>
+</div>

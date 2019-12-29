@@ -19,26 +19,30 @@ export class Display {
   }
 
   onSave() {
-    var data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+    const saveDisplay = {
       "rootSim": this.rootSim.id,
       "familyName": this.familyName,
       "currentDay": this.currentDay,
+      "globalAgeSpans": this.globalAgeSpans,
       "sims": this.sims.map(t => t.json),
       "events": this.events.map(t => t.json)
-    }));
-    var downloader = document.createElement('a');
+    };
+
+    const data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(saveDisplay));
+    const downloader = document.createElement('a');
 
     downloader.setAttribute('href', data);
     downloader.setAttribute('download', 'simData.json');
     downloader.click();
   }
 
-  onLoad(data: { rootSim: string, familyName: string, currentDay: number, sims: SimSaveData[], events: SimEventSaveData[] }) {
+  onLoad(data: { rootSim: string, familyName: string, currentDay: number, globalAgeSpans: number[], sims: SimSaveData[], events: SimEventSaveData[] }) {
     this.familyName = data.familyName;
 
     this.sims = [];
     this.events = [];
-    this.currentDay = data.currentDay;
+    this.currentDay = data.currentDay || this.currentDay;
+    this.globalAgeSpans = data.globalAgeSpans || this.globalAgeSpans;
 
     for (let simSaveData of data.sims) {
       this.sims.push(new Sim(simSaveData));
@@ -153,7 +157,7 @@ export class Display {
     const names = rootSim.split(' ');
     const familyName = names[names.length - 1];
 
-    const loadData = { rootSim: rootId, familyName: familyName, currentDay: 1, sims: Object.keys(sims).map(t => sims[t]), events: events };
+    const loadData = { rootSim: rootId, familyName: familyName, currentDay: 1, globalAgeSpans: this.globalAgeSpans, sims: Object.keys(sims).map(t => sims[t]), events: events };
     this.onLoad(loadData);
   }
 

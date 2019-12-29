@@ -8,6 +8,7 @@ import { RecordsComponent } from './records/records.component';
 import { RecordComponent } from './records/record/record.component';
 import { TraitsComponent } from './records/record/traits/traits.component';
 import { EventsComponent } from './records/record/events/events.component';
+import { HelpComponent } from './help/help.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { EventsComponent } from './records/record/events/events.component';
     RecordsComponent,
     RecordComponent,
     TraitsComponent,
-    EventsComponent
+    EventsComponent,
+    HelpComponent
   ],
   imports: [
     BrowserModule,
