@@ -1,0 +1,31 @@
+.date {
+  display: inline-block;
+  width: 30px;
+  font-weight: 500;
+}
+
+.date-input {
+  width: 30px;
+  line-height: normal;
+  padding: 0 0.05em;
+  border: 1px solid transparent;
+  outline: none;
+  background-color:transparent;
+}
+
+.events li {
+  height: 25px;
+}
+
+.events button {
+  margin: 0 2px;
+}
+
+.events .add-event {
+  line-height: 0.8;
+}
+
+.events .delete-event {
+  float: right;
+  line-height: 0.8;
+}

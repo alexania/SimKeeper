@@ -1,0 +1,45 @@
+.traits {
+  height: 30px;
+  margin: 10px 0;
+}
+
+.traits label {
+  vertical-align: top;
+}
+
+.traits .select.field-input {
+  display: unset;
+  max-width: 330px;
+  position: absolute;
+  background-color: #FFF;
+  padding: 10px;
+  overflow: hidden;
+  margin-left: 5px;
+  -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+
+.traits .trait-option input {
+  display: none;
+}
+
+.traits .trait-option img {
+  width: 30px;
+  height: 30px;
+  background-size: 30px;
+  float: left;
+  margin: 1px;
+  padding: 3px;
+}
+
+.traits .trait-option img:hover {
+  background-color: rgba(102,191,255,0.75);
+}
+
+.traits .trait-option img.selected {
+  background-color: #0095ff;
+}

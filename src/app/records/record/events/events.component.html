@@ -1,0 +1,49 @@
+<label for="history">History:</label><br />
+<ul class="events">
+  <li *ngFor="let event of simEvents(); let i = index">
+    <span class="date clickable" (click)="focusField(event, fieldDisplay, fieldInput)">
+      Day
+    </span>
+    <input type="number" name="event-{{ i }}-date" (change)="changeEventDate(event, $event.target.value)"
+      class="date-input field-input" [value]="event.date">
+    <span class="event-display" [innerHTML]="getEventString(event)" #fieldDisplay></span>
+    <span class="event-field" style="display:none;" #fieldInput>
+      {{ event.type }}
+      <span *ngIf="['Break Up', 'Date', 'Divorce','Marriage'].indexOf(event.type) > -1">
+        <select class="partner">
+          <option value="Unknown">Unknown</option>
+          <option *ngFor="let option of display.sims" [value]="option.id">{{ option.name }}</option>
+        </select>
+      </span>
+      <span *ngIf="['Adopt', 'Birth'].indexOf(event.type) > -1">
+        <select class="parent1" [value]="getId(event.parents[0])">
+          <option value="Unknown">Unknown</option>
+          <option *ngFor="let option of display.sims" [value]="option.id">{{ option.name }}</option>
+        </select>
+        <select class="parent2" [value]="getId(event.parents[1])">
+          <option value="Unknown">Unknown</option>
+          <option *ngFor="let option of display.sims" [value]="option.id">{{ option.name }}</option>
+        </select>
+      </span>
+    </span>
+    <span>
+      <button *ngIf="event.type !== 'Birth'" type="button" (click)="deleteEvent(event)" class="btn btn-sm btn-danger delete-event">x</button>
+    </span>
+  </li>
+  <li *ngIf="sim.deathday !== null">
+    <span class="date">Day</span>
+    <input type="number" (change)="sim.deathday = $event.target.value" class="date-input field-input"
+      [value]="sim.deathday">( {{ getStageString(sim.deathday) }} ) Died   
+    <span>
+      <button type="button" (click)="sim.deathday = null" class="btn btn-sm btn-danger delete-event">x</button>
+    </span>
+  </li>
+  <li>
+    <button type="button" class="btn btn-sm btn-success add-event" (click)="addEvent('Adopt')">Be Adopted</button>
+    <button type="button" class="btn btn-sm btn-success add-event" (click)="addEvent('Break Up')">Break Up</button>
+    <button type="button" class="btn btn-sm btn-success add-event" (click)="addEvent('Date')">Date</button>
+    <button type="button" class="btn btn-sm btn-success add-event" (click)="killSim()">Die</button>
+    <button type="button" class="btn btn-sm btn-success add-event" (click)="addEvent('Divorce')">Divorce</button>
+    <button type="button" class="btn btn-sm btn-success add-event" (click)="addEvent('Marriage')">Marriage</button>
+  </li>
+</ul>

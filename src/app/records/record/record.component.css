@@ -1,0 +1,179 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance:textfield;
+}
+
+.complete-record {
+  background-color: rgba(0, 200, 100, 0.1)!important;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background-color: #99d5ff;
+}
+
+.birthday input {
+  width: 30px;
+}
+
+.parents {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.place {  
+  margin-bottom: 10px;
+}
+
+.inner-parents {
+  display: inline-block;
+  width: 40%;
+}
+
+.hidden {
+  display:none;
+}
+
+.short-description {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.short-description img {
+  vertical-align: bottom;
+}
+
+.relationship-with-root {
+  float:right;
+  font-size: 10px;
+}
+
+.sim-record {
+  position: relative;
+  padding: 1em;
+  margin: 1em;
+  background: #fff;
+  -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+
+.sim-record:before, .sim-record:after {
+  content: "";
+  position: absolute;
+  z-index: -2;
+}
+
+.sim-record.dead {
+  color: grey;
+  background-color: #EEE !important;
+}
+
+.sim-record .id {
+  font-size: 10px;
+  font-weight: bold;
+  color: #888;
+}
+
+.sim-record .manage-sim {
+  float: right;
+  font-size: 12px;
+  text-align: right;
+  line-height: 5px;
+}
+
+.sim-record .manage-sim input {
+  vertical-align: text-bottom;
+}
+
+.sim-record .manage-sim .age-span-select {
+  display: unset;
+  text-align:left;
+  position: absolute;
+  top: 125px;
+  right: 10px;
+  background-color: #FFF;
+  padding: 10px;
+  overflow: hidden;
+  -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+
+.sim-record .manage-sim .age-span-select ul {
+  padding-inline-start: 0px;
+  min-width: 100px;
+}
+
+.sim-record .manage-sim .age-span-select li {
+  display: block;
+}
+
+.sim-record .manage-sim .age-span-select label {
+  width: 75px;
+}
+
+.sim-record .manage-sim .age-span-select input {
+  text-align: right;
+  width: 30px;
+}
+
+.sim-record .manage-sim .btn-age-spans {
+  line-height: 0.8;
+  margin-top: 5px;
+}
+
+.sim-record .name {
+  display: block;
+  height: 45px;
+  font-size: x-large;
+  font-weight: bold;
+  border-bottom: 1px solid black;
+  margin-bottom: 5px;
+}
+
+.sim-record .name img {
+  margin-right: 5px;
+}
+
+.sim-record .name .name-right {
+  float:right;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.sim-record .name .name-right .root-field {
+  margin-right: 10px;
+  vertical-align: sub;
+}
+
+.sim-record label {
+  font-weight: bold;
+  color: grey;
+  margin-right: 5px;
+}
+
+.sim-record label .age-type {
+  margin-left: 5px;
+  font-size: 12px;
+  vertical-align: text-bottom;
+}
+
+.field-span {
+  display: block;
+}

@@ -1,0 +1,19 @@
+<div class="traits">
+  <label for="traits" (click)="focusField(fieldDisplay, fieldInput)" class="clickable">Traits:</label>
+  <span class="field-display" #fieldDisplay>
+    <img *ngFor="let trait of sim.traits" src="./assets/img/traits/{{ trait }}.png" title="{{ trait }}"
+      alt="{{ trait }}" width="30px" height="30px" />
+  </span>
+  <div class="field-input select" style="display:none;" #fieldInput>
+    <span *ngFor="let option of traitOptions" class="trait-option">
+      <img src="./assets/img/traits/{{ option }}.png"
+           title="{{ option }}"
+           alt="{{ option }}"
+           width="30px"
+           height="30px"
+           [ngClass]="{ 'selected':sim.traits.indexOf(option) > -1 }"
+           (click)="sim.toggleTrait(option)" />
+      <input type="checkbox" value="{{ option }}" [checked]="sim.traits.indexOf(option) > -1" #traitCheckbox />
+    </span>
+  </div>
+</div>

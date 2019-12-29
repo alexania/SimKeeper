@@ -1,0 +1,110 @@
+.page-header {
+  padding: 30px 0 15px;
+  background: #FAFAFA;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  color: #003c66;
+  font-family: 'Arial Narrow Bold', sans-serif;
+  margin: 0 0 15px;
+  font-weight: 300;
+}
+
+.current-day {
+  position: absolute;
+  top:50px;
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.family-name {
+  text-align:right;
+  width: 200px;
+}
+
+.family-name-left {
+  display: inline-block;
+  width: 40%;
+  padding: 0 8px;
+  text-align: right;
+  line-height: 36px;
+}
+
+.family-name-right {
+  display: inline-block;
+  width: 60%;
+  text-align: left;
+  line-height: 36px;
+}
+
+.current-day input {
+  width: 60px;
+}
+
+.field-input {
+  line-height: normal;
+  padding: 0 0.05em;
+  border: 1px solid transparent;
+  outline: none;
+  background-color:transparent;
+}
+
+.field-input:hover, .field-input:focus {
+  border: 1px solid;
+  border-color: rgba(169, 169, 169, 1);
+}
+
+.new-sim-header {
+  text-align:right;
+  padding: 60px 0 15px;
+  background: #F0F0F0;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+  position: fixed;
+  left: 0;
+  top: 142px;
+  right: 0;
+  z-index: 555;
+}
+
+.new-sim-header label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.new-sim-header button {
+  margin: 0 0 2px 5px;
+}
+
+.new-sim-header-left {
+  display: inline-block;
+  width: 50%;
+  text-align: left;
+  padding: 0 15px;
+}
+
+.new-sim-header-left button {
+  width: 30px;
+  font-weight: 900;
+}
+
+.new-sim-header-right {
+  display: inline-block;
+  width: 50%;
+  text-align: right;
+  padding: 0 15px;
+}
+
+input.header-input {
+  width: 200px;
+  margin: 0 10px 0 0;
+}
+
+#main {
+  margin-top: 250px;
+}

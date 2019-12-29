@@ -1,0 +1,34 @@
+<header>
+  <div class="container">
+    <div class="logo">SIMKEEPER</div>
+    <nav class="navbar">
+      <div id="hamburger-menu" *ngIf="menuCollapsed">
+        <input type="file" class="hidden" (change)="fileLoaded($event)" #fileLoadInput />
+        <a href="#" (click)="$event.preventDefault();fileLoadInput.click();">
+          Load from File
+        </a>
+        <a href="#" (click)="fileSaved()">
+          Save to File
+        </a>
+        <a href="#" (click)="loadFromGed()">
+          Load from GEDCom
+        </a>
+      </div>
+      <ul>
+        <!-- <li><a href="#">Records</a></li> -->
+        <li class="icon" (click)="toggleMenu()"><i class="fa fa-bars"></i></li>
+        <!-- <li class="loadFromFile">
+          <input type="file" (change)="fileLoaded($event)" #fileLoadInput/>
+          <a href="#" (click)="$event.preventDefault();fileLoadInput.click()">
+            Load from File
+          </a>
+        </li>
+        <li class="saveToFile">
+          <a href="#" (click)="fileSaved()">
+             Save to File
+          </a>
+        </li> -->
+      </ul>
+    </nav>
+  </div>
+</header>

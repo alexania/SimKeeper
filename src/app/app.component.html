@@ -1,0 +1,42 @@
+<app-header (simsLoaded)="onLoad($event)" (simsSaved)="onSave()"></app-header>
+<main id="main">
+  <section class="single-content">
+    <div class="page-header page-header-single">
+      <div class="container text-center">
+        <div class="family-name-left" style="text-align:right">
+          <h1><input type="text" class="family-name field-input" [(ngModel)]="familyName" /></h1>
+        </div>
+        <div class="family-name-right" style="text-align:left">
+          <h1>Family Records</h1>
+        </div>        
+        <div class="current-day">          
+          <button class="btn btn-sm btn-success" (click)="incrementDay()" type="button">+</button>
+          Day <input type="text" class="field-input" [(ngModel)]="display.currentDay" />
+        </div>
+      </div>
+    </div>
+    <div class="new-sim-header">
+      <div class="container">
+        <span class="new-sim-header-left">
+          <div>
+            <label for="find-sim">Find:</label> <input type="text" class="header-input" (input)="findSim(findInput)"
+              #findInput />
+            <button class="btn btn-sm btn-success" (click)="collapseAll()" type="button">-</button>
+            <button class="btn btn-sm btn-success" (click)="expandAll()" type="button">+</button>
+          </div>
+        </span>
+        <span class="new-sim-header-right">
+          <input type="text" class="header-input" (keyup)="addSimEnterKey($event)" #newSim />
+          <button class="btn btn-sm btn-success add-sim" (click)="addSim(newSim)" type="button">Add Sim</button>
+        </span>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <app-records [display]="display"></app-records>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,92 @@
+<div id="{{ sim.id }}" class="sim-record" [class.complete-record]="sim.isComplete" [class.dead]="sim.deathday !== null">
+  <span class="id">ID <input type="text" class="field-input" [value]="sim.id"
+      (change)="changeId($event.target)" /></span>
+  <span class="name">
+    <input type="file" class="hidden" (change)="uploadNewImage(uploadImage)" #uploadImage /><img
+      src="./assets/img/sims/{{ sim.imageUrl }}" [title]="sim.name" height="40px" (click)="uploadImage.click()" />
+    <input type="text" name="name" class="field-input" [value]="sim.name" (change)="sim.name = nameInput.value"
+      #nameInput />
+    <span class="name-right" style="float:right">
+      <button *ngIf="!collapsed" class="btn btn-sm btn-collapse" (click)="collapsed = true">Collapse</button>
+      <button *ngIf=" collapsed" class="btn btn-sm btn-expand" (click)="collapsed = false">Expand</button>
+    </span>
+  </span>
+  <span class="short-description" *ngIf="collapsed" [innerHTML]="getShortString()"></span>
+  <span *ngIf="!collapsed">
+    <div class="details">
+      <span class="manage-sim">
+        <label for="Root">Root Sim:</label><input type="radio" class="root-field" name="Root" [value]="sim.id"
+          [checked]="display.rootSim === sim" (change)="changeRootSim($event.target)" /><br />
+        <label for="Completed">Completed:</label><input type="checkbox" class="isComplete"
+          [(ngModel)]="sim.isComplete" /><br />
+        <button class="btn btn-sm btn-age-spans" (click)="showAgeSpanSelect = !showAgeSpanSelect">Age Spans</button>
+        <div class="age-span-select" [class.hidden]="!showAgeSpanSelect">
+          <ul>
+            <li><label for="Baby">Baby:</label><input class="field-input" type="number"
+                (change)="changeAgeSpan(0, $event)" [value]="sim.ageSpans[0]" /></li>
+            <li><label for="Toddler">Toddler:</label><input class="field-input" type="number"
+                (change)="changeAgeSpan(1, $event)" [value]="sim.ageSpans[1]" /></li>
+            <li><label for="Child">Child:</label><input class="field-input" type="number"
+                (change)="changeAgeSpan(2, $event)" [value]="sim.ageSpans[2]" /></li>
+            <li><label for="Teenager">Teenager:</label><input class="field-input" type="number"
+                (change)="changeAgeSpan(3, $event)" [value]="sim.ageSpans[3]" /></li>
+            <li><label for="Young Adult">Young Adult:</label><input class="field-input" type="number"
+                (change)="changeAgeSpan(4, $event)" [value]="sim.ageSpans[4]" /></li>
+            <li><label for="Adult">Adult:</label><input class="field-input" type="number"
+                (change)="changeAgeSpan(5, $event)" [value]="sim.ageSpans[5]" /></li>
+          </ul>
+        </div>
+      </span>
+      <span class="field-span birthday">
+        <label for="birthday">Birthday:</label>Day <input type="number" name="birthday"
+          (change)="changeBirthday($event.target)" [value]="sim.birthday" class="field-input" />
+      </span>
+      <span class="field-span stage">
+        <label for="stage">Stage<span
+            class="age-type">({{ sim.stageOverride === null ? "Auto" : "Manual" }})</span>:</label>
+        <select class="field-input" [value]="getSimStage()" (change)="changeStage($event.target)">
+          <option value="">Auto</option>
+          <option *ngFor="let stage of stageOptions" [value]="stage.key">{{ stage.value }}</option>
+        </select>
+      </span>
+      <app-traits [sim]="sim"></app-traits>
+      <span class="parents">
+        <span class="inner-parents" *ngIf="sim.parents[0] || sim.parents[1]">
+          <label for="Parent1">Parent: </label><span class="field-display"
+            [innerHTML]="display.linkSim(sim.parents[0])"></span><br />
+          <label for="Parent2">Parent: </label><span class="field-display"
+            [innerHTML]="display.linkSim(sim.parents[1])"></span>
+        </span>
+        <span class="inner-parents" *ngIf="sim.adoptedParents">
+          <label for="AdoptedParent1">Adopted Parent: </label><span class="field-display"
+            [innerHTML]="display.linkSim(sim.adoptedParents[0])"></span><br />
+          <label for="AdoptedParent2">Adopted Parent: </label><span class="field-display"
+            [innerHTML]="display.linkSim(sim.adoptedParents[1])"></span>
+        </span>
+      </span>
+      <span *ngIf="sim.dating" class="field-span dating" style="display:block;">
+        <label for="Dating">Dating: </label><span class="field-display"
+          [innerHTML]="display.linkSim(sim.dating)"></span>
+      </span>
+      <span *ngIf="sim.spouse" class="field-span spouse" style="display:block;">
+        <label for="Spouse">Spouse: </label><span class="field-display"
+          [innerHTML]="display.linkSim(sim.spouse)"></span>
+      </span>
+      <span class="field-span career">
+        <label for="career">Career:</label>
+        <select class="field-input" [(ngModel)]="sim.career">
+          <option *ngFor="let career of careerOptions" [value]="career.value">{{ career.value }}</option>
+        </select>
+      </span>
+      <span class="field-span place">
+        <label for="place">Place:</label>
+        <select class="field-input" [(ngModel)]="sim.place">
+          <option *ngFor="let place of placeOptions" [value]="place.value">{{ place.value }}</option>
+        </select>
+      </span>
+    </div>
+    <app-events [sim]="sim" [display]="display">
+    </app-events>
+    <button type="button" (click)="deleteSim()" class="btn btn-sm btn-danger delete-sim">Delete</button>
+  </span>
+</div>
