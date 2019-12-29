@@ -2,8 +2,7 @@
   <span class="id">ID <input type="text" class="field-input" [value]="sim.id"
       (change)="changeId($event.target)" /></span>
   <span class="name">
-    <input type="file" class="hidden" (change)="uploadNewImage(uploadImage)" #uploadImage /><img
-      src="./assets/img/sims/{{ sim.imageUrl }}" [title]="sim.name" height="40px" (click)="uploadImage.click()" />
+    <img src="./assets/img/sims/{{ sim.imageUrl }}" [title]="sim.name" height="40px" />
     <input type="text" name="name" class="field-input" [value]="sim.name" (change)="sim.name = nameInput.value"
       #nameInput />
     <span class="name-right" style="float:right">
@@ -19,21 +18,21 @@
           [checked]="display.rootSim === sim" (change)="changeRootSim($event.target)" /><br />
         <label for="Completed">Completed:</label><input type="checkbox" class="isComplete"
           [(ngModel)]="sim.isComplete" /><br />
-        <button class="btn btn-sm btn-age-spans" (click)="showAgeSpanSelect = !showAgeSpanSelect">Age Spans</button>
-        <div class="age-span-select" [class.hidden]="!showAgeSpanSelect">
+        <button class="btn btn-sm btn-age-spans" (click)="onClickAgeSpans()">Age Spans</button>
+        <div class="age-span-select" *ngIf="ageSpans">
           <ul>
             <li><label for="Baby">Baby:</label><input class="field-input" type="number"
-                (change)="changeAgeSpan(0, $event)" [value]="sim.ageSpans[0]" /></li>
+                (change)="changeAgeSpan(0, $event)" [value]="ageSpans[0]" /></li>
             <li><label for="Toddler">Toddler:</label><input class="field-input" type="number"
-                (change)="changeAgeSpan(1, $event)" [value]="sim.ageSpans[1]" /></li>
+                (change)="changeAgeSpan(1, $event)" [value]="ageSpans[1]" /></li>
             <li><label for="Child">Child:</label><input class="field-input" type="number"
-                (change)="changeAgeSpan(2, $event)" [value]="sim.ageSpans[2]" /></li>
+                (change)="changeAgeSpan(2, $event)" [value]="ageSpans[2]" /></li>
             <li><label for="Teenager">Teenager:</label><input class="field-input" type="number"
-                (change)="changeAgeSpan(3, $event)" [value]="sim.ageSpans[3]" /></li>
+                (change)="changeAgeSpan(3, $event)" [value]="ageSpans[3]" /></li>
             <li><label for="Young Adult">Young Adult:</label><input class="field-input" type="number"
-                (change)="changeAgeSpan(4, $event)" [value]="sim.ageSpans[4]" /></li>
+                (change)="changeAgeSpan(4, $event)" [value]="ageSpans[4]" /></li>
             <li><label for="Adult">Adult:</label><input class="field-input" type="number"
-                (change)="changeAgeSpan(5, $event)" [value]="sim.ageSpans[5]" /></li>
+                (change)="changeAgeSpan(5, $event)" [value]="ageSpans[5]" /></li>
           </ul>
         </div>
       </span>

@@ -1,18 +1,174 @@
-import { SimEvent } from './event.model';
-import { Sim } from './sim.model';
+import { SimEvent, SimEventSaveData } from './event.model';
+import { Sim, SimSaveData } from './sim.model';
 import { EventType } from './enums';
 
 export class Display {
   public currentDay: number;
   public rootSim: Sim;
+  public familyName: string;
   public sims: Sim[];
   public events: SimEvent[];
+
+  public globalAgeSpans: number[] = [2, 7, 13, 13, 24, 24, 10];
 
   constructor(currentDay: number, rootSim?: Sim, sims?: Sim[], events?: SimEvent[]) {
     this.currentDay = currentDay;
     this.rootSim = rootSim;
     this.sims = sims || [];
     this.events = events || [];
+  }
+
+  onSave() {
+    var data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+      "rootSim": this.rootSim.id,
+      "familyName": this.familyName,
+      "currentDay": this.currentDay,
+      "sims": this.sims.map(t => t.json),
+      "events": this.events.map(t => t.json)
+    }));
+    var downloader = document.createElement('a');
+
+    downloader.setAttribute('href', data);
+    downloader.setAttribute('download', 'simData.json');
+    downloader.click();
+  }
+
+  onLoad(data: { rootSim: string, familyName: string, currentDay: number, sims: SimSaveData[], events: SimEventSaveData[] }) {
+    this.familyName = data.familyName;
+
+    this.sims = [];
+    this.events = [];
+    this.currentDay = data.currentDay;
+
+    for (let simSaveData of data.sims) {
+      this.sims.push(new Sim(simSaveData));
+    }
+
+    this.rootSim = this.findSim(data.rootSim) || this.sims[0];
+
+    this.sortSims();
+
+    // for (let sim of this.sims) {
+    //   sim.buildConnections(this.sims);
+    // }
+
+    for (let event of data.events) {
+      if (Object.values(EventType).includes(event.type)) {
+        let newEvent = new SimEvent(event);
+        newEvent.buildConnections(this.sims);
+        this.events.push(newEvent);
+
+        if (newEvent.type === EventType.Birth) {
+          newEvent.sims[0].parents = newEvent.parents;
+          if (newEvent.parents[0]) {
+            newEvent.parents[0].children.push(newEvent.sims[0]);
+          }
+          if (newEvent.parents[1]) {
+            newEvent.parents[1].children.push(newEvent.sims[0]);
+          }
+        }
+      }
+    }
+
+    this.sortEvents();
+  }
+
+  onGedLoad(data: { level: number, pointer: string, tag: string, data: string }[]) {
+    let rootSim: string = null;
+    let rootId: string = null;
+
+    let sims: { [id: string]: SimSaveData } = {};
+    let events: SimEventSaveData[] = [];
+
+    let currentSim: SimSaveData;
+    let currentFamily: { id: string, sims: string[], children: string[], married: Boolean, divorced: Boolean };
+
+    for (let line of data) {
+      switch (line.tag) {
+        case "INDI":
+          currentFamily = null;
+          if (!sims[line.pointer]) {
+            sims[line.pointer] = new SimSaveData(line.pointer, "");
+          }
+          currentSim = sims[line.pointer];
+          break;
+        case "NAME":
+          let name = line.data.replace(/\//g, "");
+          if (!rootSim) {
+            rootSim = name;
+          } else if (currentSim) {
+            if (rootSim === name) {
+              rootId = currentSim.id;
+            }
+            currentSim.name = name;
+          }
+          break;
+        case "DEAT":
+          currentSim.deathday = 93;
+          break;
+        case "FAM":
+          this.familyToEvents(currentFamily, events);
+          currentFamily = { id: line.pointer, sims: [], children: [], married: false, divorced: false };
+          break;
+        case "TRLR":
+          this.familyToEvents(currentFamily, events);
+          break;
+        case "HUSB":
+        case "WIFE":
+          const spouse = sims[line.data];
+          if (spouse) {
+            currentFamily.sims.push(spouse.id);
+          }
+          break;
+        case "CHIL":
+          const child = sims[line.data];
+          if (child) {
+            currentFamily.children.push(child.id);
+          }
+          break;
+        case "MARR":
+          currentFamily.married = true;
+          break;
+        case "DIV":
+          currentFamily.married = true;
+          currentFamily.divorced = true;
+          break;
+        case "SUBM":
+          rootSim = null;
+          rootId = null;
+          break;
+      }
+    }
+
+    const names = rootSim.split(' ');
+    const familyName = names[names.length - 1];
+
+    const loadData = { rootSim: rootId, familyName: familyName, currentDay: 1, sims: Object.keys(sims).map(t => sims[t]), events: events };
+    this.onLoad(loadData);
+  }
+
+  private familyToEvents(currentFamily: { id: string; sims: string[]; children: string[]; married: Boolean; divorced: Boolean; }, events: SimEventSaveData[]) {
+    if (currentFamily) {
+      for (let child of currentFamily.children) {
+        let event = new SimEventSaveData(EventType.Birth, 0, [child], currentFamily.sims);
+        events.push(event);
+      }
+      if (currentFamily.married) {
+        events.push(new SimEventSaveData(EventType.Marriage, 0, currentFamily.sims));
+      }
+      if (currentFamily.divorced) {
+        events.push(new SimEventSaveData(EventType.Divorce, 0, currentFamily.sims));
+      }
+    }
+  }
+
+  public changeBirthday(sim: Sim, birthday: number) {
+    sim.birthday = birthday;
+    const birthEvent = this.events.find(t => t.type === EventType.Birth && t.sims[0] === sim);
+    if (birthEvent) {
+      birthEvent.date = birthday;
+    }
+    this.sortEvents();
   }
 
   public linkSim(sim: Sim): string {

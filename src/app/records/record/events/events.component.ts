@@ -33,11 +33,11 @@ export class EventsComponent implements OnInit {
   }
 
   getStageString(date: number) {
-    return Stage[this.sim.getStage(date)];
+    return Stage[this.sim.getStage(date, this.display.globalAgeSpans)];
   }
 
   getEventString(event: SimEvent) {
-    return event.getEventString(this.sim);
+    return event.getEventString(this.sim, this.display.globalAgeSpans);
   }
 
   focusField(event: SimEvent, fieldDisplay: HTMLElement, fieldInput: HTMLElement) {
@@ -142,7 +142,7 @@ export class EventsComponent implements OnInit {
   }
 
   killSim() {
-    this.sim.deathday = this.sim.birthday + this.sim.ageSpans.reduce((total, val) => { return total + val; }) + 10;
+    this.sim.deathday = this.sim.birthday + this.sim.ageSpans(this.display.globalAgeSpans).reduce((total, val) => { return total + val; });
   }
 
   addEvent(eventString: string): void {

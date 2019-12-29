@@ -83,45 +83,6 @@ export class Sim {
     return "Unknown";
   }
 
-  public buildConnections(sims: Sim[]) {
-
-    // Set parents.
-    if (this.parentIds) {
-      for (let i = 0; i < 2; i++) {
-        if (this.parentIds[i]) {
-          let parent = sims.find(t => t.id === this.parentIds[i]);
-          if (parent) {
-            this.parents[i] = parent;
-            parent.children.push(this);
-          }
-        }
-      }
-      this.parentIds = null;
-    }
-
-    // Set adopted parents.
-    if (this.adoptedParentIds) {
-      this.adoptedParents = [null, null];
-      for (let i = 0; i < this.adoptedParentIds.length; i++) {
-        if (this.adoptedParentIds[i]) {
-          let parent = sims.find(t => t.id === this.adoptedParentIds[i]);
-          if (parent) {
-            this.adoptedParents[i] = parent;
-            parent.adoptedChilden.push(this);
-          }
-        }
-      }
-      this.adoptedParentIds = null;
-    }
-  }
-
-  public get ageSpans() {
-    if (this.ageSpansOverride) {
-      return this.ageSpansOverride;
-    }
-    return [2, 7, 13, 13, 24, 24];
-  }
-
   public get json() {
     const jsonObject = {};
 
@@ -155,6 +116,13 @@ export class Sim {
     return jsonObject;
   }
 
+  public ageSpans(globalAgeSpans: number[]) {
+    if (this.ageSpansOverride) {
+      return this.ageSpansOverride;
+    }
+    return globalAgeSpans;//[2, 7, 13, 13, 24, 24];
+  }
+
   toggleTrait(trait: string): void {
     const index = this.traits.indexOf(trait);
     if (index > -1) {
@@ -164,15 +132,16 @@ export class Sim {
     }
   }
 
-  getStage(date: number) {
+  getStage(date: number, globalAgeSpans: number[]) {
     if (this.deathday !== null && this.deathday < date) {
       date = this.deathday;
     }
 
+    let ageSpans = this.ageSpans(globalAgeSpans);
     let age = this.birthday;
     let stage: number;
-    for (stage = 0; stage < this.ageSpans.length; stage++) {
-      age += this.ageSpans[stage];
+    for (stage = 0; stage < ageSpans.length - 1; stage++) {
+      age += ageSpans[stage];
       if (date < age) {
         break;
       }

@@ -106,11 +106,11 @@ export class SimEvent {
     return this.parents[0].id === id ? this.parents[1] : this.parents[0];
   }
 
-  getEventString(sim: Sim) {
+  getEventString(sim: Sim, globalAgeSpans: number[]) {
     let partner: Sim;
     let parent1: Sim;
     let parent2: Sim;
-    let stage = Stage[sim.getStage(this.date)];
+    let stage = Stage[sim.getStage(this.date, globalAgeSpans)];
 
     switch (this.type) {
       case EventType.Adopt:

@@ -1,10 +1,10 @@
-<app-header (simsLoaded)="onLoad($event)" (simsSaved)="onSave()"></app-header>
+<app-header [display]="display" (gedComLoaded)="onGedLoad($event)"></app-header>
 <main id="main">
   <section class="single-content">
     <div class="page-header page-header-single">
       <div class="container text-center">
         <div class="family-name-left" style="text-align:right">
-          <h1><input type="text" class="family-name field-input" [(ngModel)]="familyName" /></h1>
+          <h1><input type="text" class="family-name field-input" [(ngModel)]="display.familyName" /></h1>
         </div>
         <div class="family-name-right" style="text-align:left">
           <h1>Family Records</h1>

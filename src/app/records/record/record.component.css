@@ -102,17 +102,16 @@ input[type=number] {
   display: unset;
   text-align:left;
   position: absolute;
-  top: 125px;
+  top: 150px;
   right: 10px;
   background-color: #FFF;
+  background-clip: padding-box;
   padding: 10px;
-  overflow: hidden;
-  -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  -moz-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  overflow: hidden;  
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  -webkit-box-shadow: 0 1px 15px rgba(27, 31, 35, 0.15);
+  -moz-box-shadow: 0 1px 15px rgba(27, 31, 35, 0.15);
+  box-shadow: 0 1px 15px rgba(27, 31, 35, 0.15);
 }
 
 .sim-record .manage-sim .age-span-select ul {

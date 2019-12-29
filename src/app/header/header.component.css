@@ -25,13 +25,6 @@ nav ul {
   list-style: none;
 }
 
-nav li {
-  float: left;
-  padding: 15px 0;
-  margin: 0;
-  position: relative;
-}
-
 nav a {
   font-size: 15px;
   padding: 0 0 0 17px;
@@ -60,17 +53,74 @@ nav #hamburger-menu {
   top: 60px;
   padding: 10px 0;
   background-color: white;
-  -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  -moz-box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  -webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  list-style: none;
+  background-clip: padding-box;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  -webkit-box-shadow: 0 1px 15px rgba(27, 31, 35, 0.15);
+  -moz-box-shadow: 0 1px 15px rgba(27, 31, 35, 0.15);
+  box-shadow: 0 1px 15px rgba(27, 31, 35, 0.15);
 }
 
 nav #hamburger-menu a {
   display: block;
-  padding: 5px 20px;
+  padding: 4px 8px 4px 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: white;
+  line-height: 1.5;
+}
+
+nav #hamburger-menu a:hover {
+  background-color: #003c66;
+  color: #FFF;
+  text-decoration: none;
+  outline: none;
+}
+
+nav #hamburger-menu .age-span-select {
+  display: unset;
+  text-align:left;
+  position: absolute;
+  top: 125px;
+  right: -20px;
+  background-color: #FFF;
+  background-clip: padding-box;
+  padding: 10px;
+  overflow: hidden;  
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  -webkit-box-shadow: 0 1px 15px rgba(27, 31, 35, 0.15);
+  -moz-box-shadow: 0 1px 15px rgba(27, 31, 35, 0.15);
+  box-shadow: 0 1px 15px rgba(27, 31, 35, 0.15);
+}
+
+nav #hamburger-menu .age-span-select ul {
+  padding-inline-start: 0px;
+  min-width: 100px;
+}
+
+nav #hamburger-menu .age-span-select li {
+  display: block;
+}
+
+nav #hamburger-menu .age-span-select label {
+  width: 100px;
+  font-weight: normal;
+  color: #003c66;
+}
+
+nav #hamburger-menu .age-span-select input {
+  text-align: right;
+  width: 50px;
+  border: 1px solid;
+  border-color: rgba(169, 169, 169, 1);
+}
+
+nav .dropdown-divider {
+  display: block;
+  height: 0;
+  margin: 8px 0;
+  border-top: 1px solid #e1e4e8;
 }
 
 nav .icon {
@@ -78,6 +128,9 @@ nav .icon {
   margin: 12px 0 20px 18px;
   padding: 0 15px 0 20px;
   cursor: pointer;
+  float: left;
+  margin: 0;
+  position: relative;
 }
 
 nav .loadFromFile {

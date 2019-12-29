@@ -19,51 +19,7 @@ export class AppComponent implements OnInit {
     this.display = new Display(1);
   }
 
-  ngOnInit() {    
-  }
-
-  onSave() {
-    var data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
-      "rootSim": this.display.rootSim.id,
-      "familyName": this.familyName,
-      "currentDay": this.display.currentDay,
-      "sims": this.display.sims.map(t => t.json),
-      "events": this.display.events.map(t => t.json)
-    }));
-    var downloader = document.createElement('a');
-
-    downloader.setAttribute('href', data);
-    downloader.setAttribute('download', 'simData.json');
-    downloader.click();
-  }
-
-  onLoad(data: { rootSim: string, familyName: string, currentDay: number, sims: SimSaveData[], events: SimEventSaveData[] }) {
-    this.familyName = data.familyName;
-
-    this.display.sims = [];
-    this.display.events = [];
-    this.display.currentDay = data.currentDay;
-
-    for (let simSaveData of data.sims) {
-      this.display.sims.push(new Sim(simSaveData));
-    }
-
-    this.display.rootSim = this.display.findSim(data.rootSim) || this.display.sims[0];
-
-    this.display.sortSims();
-
-    for (let sim of this.display.sims) {
-      sim.buildConnections(this.display.sims);
-    }
-
-    for (let event of data.events) {
-      if (Object.values(EventType).includes(event.type)) {
-        let newEvent = new SimEvent(event);
-        newEvent.buildConnections(this.display.sims);
-        this.display.events.push(newEvent);
-      }
-    }
-    this.display.sortEvents();
+  ngOnInit() {
   }
 
   findSim(findInput: HTMLInputElement) {
@@ -110,7 +66,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  scrollToSim(id:string) {
+  scrollToSim(id: string) {
     setTimeout(function () {
       document.getElementById(id).scrollIntoView(false);
     }, 100);
@@ -130,7 +86,7 @@ export class AppComponent implements OnInit {
     if (this.display.sims.length === 0) {
       this.display.rootSim = newSim;
       const names = newSim.name.split(' ');
-      this.familyName = names[names.length - 1];
+      this.display.familyName = names[names.length - 1];
     }
 
     this.display.sims.push(newSim);

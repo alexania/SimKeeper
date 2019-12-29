@@ -2,7 +2,6 @@ import { Component, OnInit, Input, ViewEncapsulation, Output, EventEmitter } fro
 import { Sim } from 'src/app/shared/sim.model';
 import { Stage, Career, Place, EventType } from 'src/app/shared/enums';
 import { Display } from 'src/app/shared/display.model';
-import { SimEvent } from 'src/app/shared/event.model';
 
 @Component({
   selector: 'app-record',
@@ -16,7 +15,7 @@ export class RecordComponent implements OnInit {
   @Input() public sim: Sim;
 
   public collapsed = true;
-  public showAgeSpanSelect = false;
+  public ageSpans:number[] = null;
 
   public stageOptions = Object.keys(Stage).filter(t => t === "0" || +t).map(t => { return { key: t, value: Stage[t] }; });
   public careerOptions = Object.keys(Career).map(t => { return { key: t, value: Career[t] } });
@@ -39,8 +38,16 @@ export class RecordComponent implements OnInit {
     }
   }
 
+  onClickAgeSpans() {
+    if (this.ageSpans) {
+      this.ageSpans = null;
+    } else {
+      this.ageSpans = this.sim.ageSpans(this.display.globalAgeSpans);
+    }
+  }
+
   getSimStage() {
-    return this.sim.getStage(this.display.currentDay);
+    return this.sim.getStage(this.display.currentDay, this.display.globalAgeSpans);
   }
 
   getShortString() {
@@ -129,16 +136,17 @@ export class RecordComponent implements OnInit {
 
   changeAgeSpan(spanIndex: number, event: any) {
     const newSpan = +event.target.value;
-    if (this.sim.ageSpans[spanIndex] !== newSpan) {
-      this.sim.ageSpansOverride = this.sim.ageSpans;
+    let ageSpans = this.sim.ageSpans(this.display.globalAgeSpans);
+    if (ageSpans[spanIndex] !== newSpan) {
+      this.sim.ageSpansOverride = ageSpans;
       this.sim.ageSpansOverride[spanIndex] = newSpan;
 
-      if (this.sim.ageSpansOverride[0] === 2 &&
-        this.sim.ageSpansOverride[1] === 7 &&
-        this.sim.ageSpansOverride[2] === 13 &&
-        this.sim.ageSpansOverride[3] === 13 &&
-        this.sim.ageSpansOverride[4] === 24 &&
-        this.sim.ageSpansOverride[5] === 24) {
+      if (this.sim.ageSpansOverride[0] === this.display.globalAgeSpans[0] &&
+        this.sim.ageSpansOverride[1] === this.display.globalAgeSpans[1] &&
+        this.sim.ageSpansOverride[2] === this.display.globalAgeSpans[2] &&
+        this.sim.ageSpansOverride[3] === this.display.globalAgeSpans[3] &&
+        this.sim.ageSpansOverride[4] === this.display.globalAgeSpans[4] &&
+        this.sim.ageSpansOverride[5] === this.display.globalAgeSpans[5]) {
         this.sim.ageSpansOverride = null;
       }
     }
@@ -147,12 +155,7 @@ export class RecordComponent implements OnInit {
   changeBirthday(birthdayInput: HTMLInputElement) {
     const newBirthday = +birthdayInput.value;
     if (this.sim.birthday !== newBirthday) {
-      this.sim.birthday = newBirthday;
-      const birthEvent = this.display.events.find(t => t.type === EventType.Birth && t.sims[0] === this.sim);
-      if (birthEvent) {
-        birthEvent.date = newBirthday;
-      }
-      this.display.sortEvents();
+      this.display.changeBirthday(this.sim, newBirthday);
     }
   }
 }

@@ -43,7 +43,6 @@ yarn-error.log
 testem.log
 /typings
 /Sims 4 Icons
-/src/data
 
 # e2e
 /e2e/*.js
