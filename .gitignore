@@ -6,6 +6,7 @@
 /out-tsc
 # Only exists if Bazel was run
 /bazel-out
+.firebase
 
 # dependencies
 /node_modules
@@ -30,6 +31,7 @@ speed-measure-plugin*.json
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+.editorconfig
 
 # misc
 /.sass-cache
@@ -40,7 +42,25 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+/Sims 4 Icons
+/src/data
+
+# e2e
+/e2e/*.js
+/e2e/*.map
 
 # System Files
 .DS_Store
 Thumbs.db
+
+src/assets/img/sims/Arielle1.png
+
+src/assets/img/sims/Carly1.png
+
+src/assets/img/sims/Farrah1.png
+
+src/assets/img/sims/Josh1.png
+
+src/assets/img/sims/Leonard1.png
+
+src/assets/img/sims/Payton1.png

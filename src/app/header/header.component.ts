@@ -40,4 +40,7 @@ export class HeaderComponent implements OnInit {
     this.simsSaved.emit();
   }
 
+  public loadFromGed() {
+    this.toggleMenu();
+  }
 }
