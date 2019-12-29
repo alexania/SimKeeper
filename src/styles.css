@@ -1,0 +1,46 @@
+.page-header-single {
+  position: fixed;
+  left: 0;
+  top: 45px;
+  right: 0;
+  z-index: 999;
+}
+
+.single-content { 
+  margin-top: 190px!important;
+}
+
+body {
+  color: #555;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size:14px;
+  background-color: #EAEAEA;
+}
+
+a {
+  color: #008ced;
+  transition: 0.5s;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:active, a:focus, a:hover {
+  outline: none;
+  text-decoration: underline;;
+}
+
+a.dead {
+  color: #888;
+  text-decoration: overline;
+}
+
+.caret-right {
+  margin: 6px 10px 0 0;
+  border-bottom: 4px solid transparent;
+  border-top: 4px solid transparent;
+  border-left: 4px solid #008ced;
+  display: inline-block;
+  height: 0;
+  vertical-align: top;
+  width: 0;
+}
