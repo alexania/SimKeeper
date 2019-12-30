@@ -33,32 +33,24 @@
           </ul>
         </div>
         <div class="dropdown-divider"></div>
-        <input type="file" class="hidden" (change)="gedFileLoaded($event)" #gedFileInput />
+        <a href="#" (click)="showTree()">
+          Show Tree
+        </a>
+        <div class="dropdown-divider"></div>
+        <input type="file" class="hidden" #gedFileInput />
         <a href="#" (click)="confirmGedLoad($event, gedFileInput)">
           Load from GEDCom
         </a>
         <div class="dropdown-divider"></div>
-        <a href="#" (click)="showHelp($event)">
+        <a href="#" (click)="showHelp()">
           Help
         </a>
       </div>
       <ul>
-        <!-- <li><a href="#">Records</a></li> -->
         <li class="icon" (click)="toggleMenu(!menuCollapsed)"><i class="fa fa-bars"></i></li>
-        <!-- <li class="loadFromFile">
-          <input type="file" (change)="fileLoaded($event)" #fileLoadInput/>
-          <a href="#" (click)="$event.preventDefault();fileLoadInput.click()">
-            Load from File
-          </a>
-        </li>
-        <li class="saveToFile">
-          <a href="#" (click)="fileSaved()">
-             Save to File
-          </a>
-        </li> -->
       </ul>
     </nav>
   </div>
-  <div id="disclaimer">Got suggestions, bug reports <s>or complaints</s>? Try the <a href="#" (click)="showHelp($event)">FAQ</a> or give me a shout on <a
+  <div id="disclaimer">Got suggestions, bug reports <s>or complaints</s>? Try the <a href="#" (click)="showHelp()">FAQ</a> or give me a shout on <a
       href="http://reddit.com/u/alexania" target="_blank">reddit</a>.</div>
 </header>

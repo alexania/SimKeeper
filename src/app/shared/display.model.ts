@@ -85,6 +85,7 @@ export class Display {
     }
 
     this.sortEvents();
+    console.log(this.rootSim);
   }
 
   onGedLoad(data: { level: number, pointer: string, tag: string, data: string }[]) {

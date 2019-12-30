@@ -1,5 +1,6 @@
-<app-header [display]="display" (helpShowed)="showHelp()"></app-header>
-<app-help (helpClosed)="closeHelp()" *ngIf="helpVisible"></app-help>
+<app-header [display]="display" (showDialog)="showDialog($event)"></app-header>
+<app-help (helpClosed)="closeDialog($event)" *ngIf="helpVisible"></app-help>
+<app-tree [display]="display" (treeClosed)="closeDialog($event)" *ngIf="treeVisible"></app-tree>
 <main id="main">
   <section class="single-content">
     <div class="page-header page-header-single">

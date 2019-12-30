@@ -9,6 +9,7 @@ import { RecordComponent } from './records/record/record.component';
 import { TraitsComponent } from './records/record/traits/traits.component';
 import { EventsComponent } from './records/record/events/events.component';
 import { HelpComponent } from './help/help.component';
+import { TreeComponent } from './tree/tree.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { HelpComponent } from './help/help.component';
     RecordComponent,
     TraitsComponent,
     EventsComponent,
-    HelpComponent
+    HelpComponent,
+    TreeComponent
   ],
   imports: [
     BrowserModule,

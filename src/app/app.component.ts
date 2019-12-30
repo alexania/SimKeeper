@@ -18,13 +18,40 @@ export class AppComponent implements OnInit {
   public foundSims:Sim[];
   public foundIndex = 0;
 
-  public helpVisible = true;
+  public helpVisible = false;
+  public treeVisible = true;
 
   constructor() {
     this.display = new Display(1);
   }
 
   ngOnInit() {
+    this.addSimFromName("Bella Goth");
+    this.addSimFromName("Carlton Goth");
+    this.addSimFromName("Alexander Goth");
+    this.addSimFromName("Cassandra Magee");
+
+    this.addSimFromName("Carley Goth");
+    this.addSimFromName("Elyse Talbert");
+    this.addSimFromName("Shanice Goth");
+    
+    this.addSimFromName("John Palmer");
+
+    this.addSimFromName("Gerard Collins");
+    this.addSimFromName("Aurora Magee");
+
+    this.display.sims[0].children.push(this.display.sims[1]);
+    this.display.sims[0].children.push(this.display.sims[2]);
+    this.display.sims[0].children.push(this.display.sims[3]);
+    
+    this.display.sims[2].children.push(this.display.sims[4]);
+    this.display.sims[2].children.push(this.display.sims[5]);
+    this.display.sims[2].children.push(this.display.sims[6]);
+
+    this.display.sims[3].children.push(this.display.sims[8]);
+    this.display.sims[3].children.push(this.display.sims[9]);
+
+    this.display.sims[6].children.push(this.display.sims[7]);
   }
 
   addSimKeyUp(event: KeyboardEvent) {
@@ -89,15 +116,26 @@ export class AppComponent implements OnInit {
     }, 100);
   }
 
-  closeHelp(data:{ type:string }) {
-    this.helpVisible = false;
+  closeDialog(type: string) {
+    if (type === "closeHelp") {
+      this.helpVisible = false;
+    } else {
+      this.treeVisible = false;
+    }
   }
 
-  showHelp(data:{ type:string }) {
-    this.helpVisible = true;
+  showDialog(type: string) {
+    console.log(type);
+    if (type === "showHelp") {
+      this.helpVisible = true;
+    } else {
+      this.treeVisible = true;
+    }
   }
 
-  private addSimFromName(name: string) {
+  
+
+  private createSimFromName(name: string) {
     const newSim = new Sim(null, name, this.display.currentDay);
     //console.log("Create new sim:");
     //console.log(newSim);
@@ -108,19 +146,26 @@ export class AppComponent implements OnInit {
     }
     newSim.id += id;
 
+    const newEvent = new SimEvent(null, EventType.Birth, newSim.birthday, [newSim]);
+
+    return {sim: newSim, event: newEvent};
+  }
+
+  private addSimFromName(name: string) {
+    const newSim = this.createSimFromName(name);
+
     if (this.display.sims.length === 0) {
-      this.display.rootSim = newSim;
-      const names = newSim.name.split(' ');
+      this.display.rootSim = newSim.sim;
+      const names = newSim.sim.name.split(' ');
       this.display.familyName = names[names.length - 1];
     }
 
-    this.display.sims.push(newSim);
+    this.display.sims.push(newSim.sim);
     this.display.sortSims();
 
-    this.scrollToSim(newSim.id);
+    this.scrollToSim(newSim.sim.id);
 
-    const newEvent = new SimEvent(null, EventType.Birth, newSim.birthday, [newSim]);
-    this.display.addEvent(newEvent);
+    this.display.addEvent(newSim.event);
 
     return true;
   }
