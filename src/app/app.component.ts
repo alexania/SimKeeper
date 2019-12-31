@@ -27,9 +27,15 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.addSimFromName("Bella Goth");
+    this.addSimFromName("Mortimer Goth");
+
+    this.addSimFromName("Nathan Milan");
+
     this.addSimFromName("Carlton Goth");
     this.addSimFromName("Alexander Goth");
     this.addSimFromName("Cassandra Magee");
+
+    this.addSimFromName("Brianna Talbert");
 
     this.addSimFromName("Carley Goth");
     this.addSimFromName("Elyse Talbert");
@@ -40,18 +46,38 @@ export class AppComponent implements OnInit {
     this.addSimFromName("Gerard Collins");
     this.addSimFromName("Aurora Magee");
 
-    this.display.sims[0].children.push(this.display.sims[1]);
-    this.display.sims[0].children.push(this.display.sims[2]);
-    this.display.sims[0].children.push(this.display.sims[3]);
+    const bella = this.display.findSim("Bella1");
+    const mortimer = this.display.findSim("Mortimer1");
+
+    const nathan = this.display.findSim("Nathan1");
+
+    const carlton = this.display.findSim("Carlton1");
+    const alexander = this.display.findSim("Alexander1");
+    const cassandra = this.display.findSim("Cassandra1");
+
+    const brianna = this.display.findSim("Brianna1");
+
+    const carley = this.display.findSim("Carley1");
+    const elyse = this.display.findSim("Elyse1");
+    const shanice = this.display.findSim("Shanice1");
+    const john = this.display.findSim("John1");
+    const gerard = this.display.findSim("Gerard1");
+    const aurora = this.display.findSim("Aurora1");
+
+    alexander.parents = [ bella, mortimer ];
+    cassandra.parents = [ bella, mortimer ];
+    carlton.parents = [ bella, nathan ];
+
+    carley.parents = [ alexander, brianna ];
+    elyse.parents = [ alexander, brianna ];
+    shanice.parents = [ alexander, brianna ];
+
+    gerard.parents = [ cassandra, null ];
+    aurora.parents = [ cassandra, null ];
     
-    this.display.sims[2].children.push(this.display.sims[4]);
-    this.display.sims[2].children.push(this.display.sims[5]);
-    this.display.sims[2].children.push(this.display.sims[6]);
+    john.parents = [ shanice, null ];
 
-    this.display.sims[3].children.push(this.display.sims[8]);
-    this.display.sims[3].children.push(this.display.sims[9]);
-
-    this.display.sims[6].children.push(this.display.sims[7]);
+    this.display.rootSim = alexander;
   }
 
   addSimKeyUp(event: KeyboardEvent) {

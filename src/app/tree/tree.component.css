@@ -17,6 +17,7 @@
 #tree-container {
   background: white;
   width: 80%;
+  min-width: 800px;
   min-height: 400px;
   margin: 50px auto;
   padding: 0 25px;
@@ -37,4 +38,27 @@
 
 #tree-container label {
   margin-right:15px;
+}
+
+#tree-container .node circle {
+  fill: #999;
+}
+
+#tree-container .node text {
+  font: 10px sans-serif;
+}
+
+#tree-container .node--internal circle {
+  fill: #555;
+}
+
+#tree-container .node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+#tree-container .link {
+  fill: none;
+  stroke: #555;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5px;
 }
