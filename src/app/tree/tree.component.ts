@@ -1,22 +1,22 @@
 import { Component, OnInit, ViewEncapsulation, Output, EventEmitter, Input, ViewChild, ElementRef } from '@angular/core';
-import * as d3 from 'd3';
 
 import { Display } from '../shared/display.model';
 import { EventType } from '../shared/enums';
 
+declare var dTree: any;
+
 export class Node {
   public constructor(
-    public id: string,
     public name: string,
-    public index: number = 0) {
-  }
+    public marriages: Marriage[] = [],
+    public children: Node[] = []
+  ) { }
 }
 
-export class Link {
+export class Marriage {
   public constructor(
-    public source: string,
-    public target: string,
-    public weight: number) { }
+    public spouse: Node
+  ) { }
 }
 
 @Component({
@@ -40,142 +40,92 @@ export class TreeComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    //this.createTreeData(this.display.sims);
-    this.createTree();
+    const data = this.createTreeData();
+    console.log(data);
+    this.createTree(data);
   }
 
-  private getNodeMap() {
-    const nodes: { [id: string]: Node } = {};
-    for (let sim of this.display.sims) {
-      nodes[sim.id] = new Node(sim.id, sim.name);
-    }
-    return nodes;
-  }
-
-  private getLinks() {
-    const links: Link[] = [];
-
-    for (let event of this.display.events) {
-      if (event.type == EventType.Birth) {
-        if (event.parents[0]) {
-          links.push(new Link(event.parents[0].id, event.sims[0].id, 1));
-        }
-        if (event.parents[1]) {
-          links.push(new Link(event.parents[1].id, event.sims[0].id, 1));
-        }
-      }
-    }
-
-    return links;
-  }
-
-  private createTree() {
+  private createTree(data: Node[]) {
     const element = this.treeElement.nativeElement;
     const width = element.offsetWidth;
     const height = 800;
 
-    const nodeMap = this.getNodeMap();
-    const nodes = Object.keys(nodeMap).map(t => nodeMap[t]);
-    const links = this.getLinks();
-
-    console.log(nodes);
-    console.log(links);
-
-    const svg = d3.select(element)
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
-
-    const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id((d: any) => d.id).distance(0).strength(1))
-      .force("collide", d3.forceCollide((d: any) => d.r + 8).iterations(16))
-      .force("charge", d3.forceManyBody().strength(-50))
-      .force("center", d3.forceCenter(width / 2, height / 2));
-    //.force("y", d3.forceY(0))
-    //.force("x", d3.forceX(0));
-
-    const link = svg.append("g")
-      .attr("stroke", "#999")
-      .attr("stroke-opacity", 0.6)
-      .selectAll("line")
-      .data(links)
-      .join("line")
-      .attr("stroke-width", d => Math.sqrt(d.weight));
-
-    var node = svg.append("g")
-      .attr("class", "nodes")
-      .selectAll("g")
-      .data(nodes)
-      .enter().append("g")
-
-    node.append("circle")
-      .attr("r", 5)
-      .call(d3.drag()
-        .on("start", function (d: any) {
-          if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-          d.fx = d.x;
-          d.fy = d.y;
-        })
-        .on("drag", function (d: any) {
-          d.fx = d3.event.x;
-          d.fy = d3.event.y;
-        })
-        .on("end", function (d: any) {
-          if (!d3.event.active) simulation.alphaTarget(0);
-          d.fx = null;
-          d.fy = null;
-        }));
-
-    node.append("text")
-      .text(function (d) {
-        return d.name;
-      })
-      .attr('x', 6)
-      .attr('y', 3);
-
-    node.append("title")
-      .text(function (d) { return d.name; });
-
-    simulation
-      .nodes(nodes)
-      .on("tick", function () {
-        link
-          .attr("x1", function (d: any) { return d.source.x; })
-          .attr("y1", function (d: any) { return d.source.y; })
-          .attr("x2", function (d: any) { return d.target.x; })
-          .attr("y2", function (d: any) { return d.target.y; });
-
-        node.attr("transform", function (d: any) {
-          return "translate(" + d.x + "," + d.y + ")";
-        })
-      });
-
-    // simulation.force("link")
-    //   .links(links);
+    dTree.init(data, {
+      target: "#tree",
+      debug: true,
+      height: height,
+      width: width,
+      nodeClick: function(name, extra) {
+        console.log(name);
+      },
+      textRenderer: function(name, extra, textClass) {
+        // THis callback is optinal but can be used to customize
+        // how the text is rendered without having to rewrite the entire node
+        // from screatch.
+        console.log(name);
+        return "<p align='center'>" + name + "</p>";
+      },
+      nodeRenderer: function (name, x, y, height, width, extra, id, nodeClass, textClass, textRenderer) {
+        // This callback is optional but can be used to customize the
+        // node element using HTML.
+        console.log(name);
+        let node = '';
+        node += '<div ';
+        node += 'style="height:100%;width:100%;" ';
+        node += 'id="' + id + '">\n';
+        node += textRenderer(name, extra, textClass);
+        node += '</div>';
+        return node;
+      }
+    });
   }
 
-  // private createTreeData(sims: Sim[]) {
-  //   const nodes: { [id: string]: TreeNode } = {};
+  private createTreeData() {
+    const nodes: { [id: string]: Node } = {};
+    const data: Node[] = [];
 
-  //   for (let sim of sims) {
-  //     nodes[sim.id] = new TreeNode(sim.id, sim.name);
-  //   }
+    for (let sim of this.display.sims) {
+      nodes[sim.id] = new Node(sim.name);
+    }
 
-  //   for (let sim of sims) {
-  //     // Do adopted parents
-  //     if (!sim.parents[0] && !sim.parents[1]) {
-  //       this.treeRoot.children.push(nodes[sim.id]);
-  //     } else {
-  //       nodes[sim.id].no_parent = false;
-  //       if (sim.parents[0]) {
-  //         nodes[sim.parents[0].id].children.push(nodes[sim.id]);
-  //       }
-  //       if (sim.parents[1]) {
-  //         nodes[sim.parents[1].id].children.push(nodes[sim.id]);
-  //       }
-  //     }
-  //   }
-  // }
+    for (let event of this.display.events) {
+      if (event.type == EventType.Birth) {
+
+        let sim = event.sims[0];
+        let simNode = nodes[sim.id];
+
+        if (!sim.parents[0] && !sim.parents[1]) {
+          if (!data.find(t => t.name === simNode.name)) {
+            data.push(simNode);
+          }
+        } else {
+          let parentNode1: Node = null;
+          let parentNode2: Node = null;
+          if (sim.parents[0]) {
+            parentNode1 = nodes[sim.parents[0].id];
+            if (!parentNode1.children.find(t => t.name === simNode.name)) {
+              parentNode1.children.push(simNode);
+            }
+          }
+          if (sim.parents[1]) {
+            parentNode2 = nodes[sim.parents[1].id];
+            if (parentNode1) {
+              if (!parentNode1.marriages.find(t => t.spouse.name === parentNode2.name)) {
+                parentNode1.marriages.push(new Marriage(parentNode2));
+              }
+            } else {
+              if (!parentNode2.children.find(t => t.name === simNode.name)) {
+                parentNode2.children.push(simNode);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return data.filter(t => t.children.length > 0 || t.marriages.length > 0);
+  }
+
 
   public closeTree() {
     this.treeClosed.emit("closeTree");
