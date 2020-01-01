@@ -2,22 +2,7 @@ import { Component, OnInit, ViewEncapsulation, Output, EventEmitter, Input, View
 
 import { Display } from '../shared/display.model';
 import { EventType } from '../shared/enums';
-
-declare var dTree: any;
-
-export class Node {
-  public constructor(
-    public name: string,
-    public marriages: Marriage[] = [],
-    public children: Node[] = []
-  ) { }
-}
-
-export class Marriage {
-  public constructor(
-    public spouse: Node
-  ) { }
-}
+import { Node, Marriage, Tree, TreeOptions } from './tree.generator';
 
 @Component({
   selector: 'app-tree',
@@ -41,7 +26,7 @@ export class TreeComponent implements OnInit {
 
   ngAfterViewInit() {
     const data = this.createTreeData();
-    console.log(data);
+    console.log("Data", data);
     this.createTree(data);
   }
 
@@ -50,25 +35,23 @@ export class TreeComponent implements OnInit {
     const width = element.offsetWidth;
     const height = 800;
 
-    dTree.init(data, {
+    const options = new TreeOptions({
       target: "#tree",
       debug: true,
       height: height,
       width: width,
-      nodeClick: function(name, extra) {
+      nodeClick: function (name, extra, id) {
         console.log(name);
       },
-      textRenderer: function(name, extra, textClass) {
+      textRenderer: function (name, extra, textClass) {
         // THis callback is optinal but can be used to customize
         // how the text is rendered without having to rewrite the entire node
         // from screatch.
-        console.log(name);
         return "<p align='center'>" + name + "</p>";
       },
       nodeRenderer: function (name, x, y, height, width, extra, id, nodeClass, textClass, textRenderer) {
         // This callback is optional but can be used to customize the
         // node element using HTML.
-        console.log(name);
         let node = '';
         node += '<div ';
         node += 'style="height:100%;width:100%;" ';
@@ -78,6 +61,7 @@ export class TreeComponent implements OnInit {
         return node;
       }
     });
+    const tree = new Tree(data, options);
   }
 
   private createTreeData() {
@@ -86,16 +70,17 @@ export class TreeComponent implements OnInit {
 
     for (let sim of this.display.sims) {
       nodes[sim.id] = new Node(sim.name);
+      nodes[sim.id].stringId = sim.id;
+      nodes[sim.id].noParent = true;
     }
 
     for (let event of this.display.events) {
-      if (event.type == EventType.Birth) {
-
+      if (event.type === EventType.Birth) {
         let sim = event.sims[0];
         let simNode = nodes[sim.id];
 
         if (!sim.parents[0] && !sim.parents[1]) {
-          if (!data.find(t => t.name === simNode.name)) {
+          if (!data.find(t => t.stringId === simNode.stringId)) {
             data.push(simNode);
           }
         } else {
@@ -103,27 +88,38 @@ export class TreeComponent implements OnInit {
           let parentNode2: Node = null;
           if (sim.parents[0]) {
             parentNode1 = nodes[sim.parents[0].id];
-            if (!parentNode1.children.find(t => t.name === simNode.name)) {
-              parentNode1.children.push(simNode);
+            if (sim.parents[1]) {
+              parentNode2 = nodes[sim.parents[1].id];
             }
+          } else {
+            parentNode1 = nodes[sim.parents[1].id];
           }
-          if (sim.parents[1]) {
-            parentNode2 = nodes[sim.parents[1].id];
-            if (parentNode1) {
-              if (!parentNode1.marriages.find(t => t.spouse.name === parentNode2.name)) {
-                parentNode1.marriages.push(new Marriage(parentNode2));
-              }
-            } else {
-              if (!parentNode2.children.find(t => t.name === simNode.name)) {
-                parentNode2.children.push(simNode);
-              }
+
+          if (parentNode2) {
+            let marriage = parentNode1.marriages.find(t => t.spouse.stringId === parentNode2.stringId);
+            if (!marriage) {
+              marriage = parentNode2.marriages.find(t => t.spouse.stringId === parentNode1.stringId);
+            }
+            if (!marriage) {
+              parentNode2.noParent = false;
+              marriage = new Marriage(parentNode2);
+              parentNode1.marriages.push(marriage);
+            }
+            if (!marriage.children.find(t => t.stringId === simNode.stringId)) {
+              simNode.noParent = false;
+              marriage.children.push(simNode);
+            }
+          } else {
+            if (!parentNode1.children.find(t => t.stringId === simNode.stringId)) {
+              simNode.noParent = false;
+              parentNode1.children.push(simNode);
             }
           }
         }
       }
     }
 
-    return data.filter(t => t.children.length > 0 || t.marriages.length > 0);
+    return data.filter(t => t.noParent);
   }
 
 
