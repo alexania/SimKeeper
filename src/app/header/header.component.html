@@ -33,12 +33,16 @@
           </ul>
         </div>
         <div class="dropdown-divider"></div>
-        <input type="file" class="hidden" (change)="gedFileLoaded($event)" #gedFileInput />
+        <span class="disabled-link">
+          Show Tree
+        </span>
+        <div class="dropdown-divider"></div>
+        <input type="file" class="hidden" #gedFileInput />
         <a href="#" (click)="confirmGedLoad($event, gedFileInput)">
           Load from GEDCom
         </a>
         <div class="dropdown-divider"></div>
-        <a href="#" (click)="showHelp($event)">
+        <a href="#" (click)="showHelp()">
           Help
         </a>
       </div>
@@ -59,6 +63,5 @@
       </ul>
     </nav>
   </div>
-  <div id="disclaimer">Got suggestions, bug reports <s>or complaints</s>? Try the <a href="#" (click)="showHelp($event)">FAQ</a> or give me a shout on <a
-      href="http://reddit.com/u/alexania" target="_blank">reddit</a>.</div>
+  <div id="disclaimer">Got suggestions, bug reports <s>or complaints</s>? Try the <a href="#" (click)="showHelp()">FAQ</a> or give me a shout on <a href="http://reddit.com/u/alexania" target="_blank">reddit</a>.</div>
 </header>

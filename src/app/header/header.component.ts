@@ -9,7 +9,7 @@ import { Display } from '../shared/display.model';
 })
 export class HeaderComponent implements OnInit {
 
-  @Output() helpShowed = new EventEmitter();
+  @Output() showDialog = new EventEmitter();
   @Input() public display: Display;
 
   public menuCollapsed = false;
@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
   }
 
-  public toggleMenu(state:boolean) {
+  public toggleMenu(state: boolean) {
     this.menuCollapsed = state;
     this.showAgeSpanSelect = false;
   }
@@ -49,6 +49,7 @@ export class HeaderComponent implements OnInit {
     this.toggleMenu(false);
     const overwrite = window.confirm(`WARNING! This will overwrite all existing records, are you sure you want to continue?`);
     if (overwrite) {
+      gedFileInput.onchange = this.gedFileLoaded.bind(this);
       gedFileInput.click();
     }
   }
@@ -73,7 +74,7 @@ export class HeaderComponent implements OnInit {
 
   public showHelp() {
     this.toggleMenu(false);
-    this.helpShowed.emit("showHelp");
+    this.showDialog.emit("showHelp");
   }
 
   private mapLine(data: string) {

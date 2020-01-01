@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   public foundSims:Sim[];
   public foundIndex = 0;
 
-  public helpVisible = true;
+  public helpVisible = false;
 
   constructor() {
     this.display = new Display(1);
@@ -89,15 +89,20 @@ export class AppComponent implements OnInit {
     }, 100);
   }
 
-  closeHelp(data:{ type:string }) {
-    this.helpVisible = false;
+  closeDialog(type: string) {
+    if (type === "closeHelp") {
+      this.helpVisible = false;
+    }
   }
 
-  showHelp(data:{ type:string }) {
-    this.helpVisible = true;
-  }
+  showDialog(type: string) {
+    console.log(type);
+    if (type === "showHelp") {
+      this.helpVisible = true;
+    }
+  }  
 
-  private addSimFromName(name: string) {
+  private createSimFromName(name: string) {
     const newSim = new Sim(null, name, this.display.currentDay);
     //console.log("Create new sim:");
     //console.log(newSim);
@@ -106,21 +111,26 @@ export class AppComponent implements OnInit {
     while (this.display.findSim(`${newSim.id}${id}`)) {
       id++;
     }
-    newSim.id += id;
+    newSim.id += id;const newEvent = new SimEvent(null, EventType.Birth, newSim.birthday, [newSim]);
+
+    return {sim: newSim, event: newEvent};
+  }
+
+  private addSimFromName(name: string) {
+    const newSim = this.createSimFromName(name);
 
     if (this.display.sims.length === 0) {
-      this.display.rootSim = newSim;
-      const names = newSim.name.split(' ');
+      this.display.rootSim = newSim.sim;
+      const names = newSim.sim.name.split(' ');
       this.display.familyName = names[names.length - 1];
     }
 
-    this.display.sims.push(newSim);
+    this.display.sims.push(newSim.sim);
     this.display.sortSims();
 
-    this.scrollToSim(newSim.id);
+    this.scrollToSim(newSim.sim.id);
 
-    const newEvent = new SimEvent(null, EventType.Birth, newSim.birthday, [newSim]);
-    this.display.addEvent(newEvent);
+    this.display.addEvent(newSim.event);
 
     return true;
   }
