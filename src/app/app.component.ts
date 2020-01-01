@@ -159,8 +159,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-  
-
   private createSimFromName(name: string) {
     const newSim = new Sim(null, name, this.display.currentDay);
     //console.log("Create new sim:");

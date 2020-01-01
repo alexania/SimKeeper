@@ -10,7 +10,6 @@ import { Display } from '../shared/display.model';
 export class HeaderComponent implements OnInit {
 
   @Output() showDialog = new EventEmitter();
-
   @Input() public display: Display;
 
   public menuCollapsed = false;
