@@ -26,58 +26,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.addSimFromName("Bella Goth");
-    this.addSimFromName("Mortimer Goth");
-
-    this.addSimFromName("Nathan Milan");
-
-    this.addSimFromName("Carlton Goth");
-    this.addSimFromName("Alexander Goth");
-    this.addSimFromName("Cassandra Magee");
-
-    this.addSimFromName("Brianna Talbert");
-
-    this.addSimFromName("Carley Goth");
-    this.addSimFromName("Elyse Talbert");
-    this.addSimFromName("Shanice Goth");
-    
-    this.addSimFromName("John Palmer");
-
-    this.addSimFromName("Gerard Collins");
-    this.addSimFromName("Aurora Magee");
-
-    const bella = this.display.findSim("Bella1");
-    const mortimer = this.display.findSim("Mortimer1");
-
-    const nathan = this.display.findSim("Nathan1");
-
-    const carlton = this.display.findSim("Carlton1");
-    const alexander = this.display.findSim("Alexander1");
-    const cassandra = this.display.findSim("Cassandra1");
-
-    const brianna = this.display.findSim("Brianna1");
-
-    const carley = this.display.findSim("Carley1");
-    const elyse = this.display.findSim("Elyse1");
-    const shanice = this.display.findSim("Shanice1");
-    const john = this.display.findSim("John1");
-    const gerard = this.display.findSim("Gerard1");
-    const aurora = this.display.findSim("Aurora1");
-
-    alexander.parents = [ bella, mortimer ];
-    cassandra.parents = [ bella, mortimer ];
-    carlton.parents = [ bella, nathan ];
-
-    carley.parents = [ alexander, brianna ];
-    elyse.parents = [ alexander, brianna ];
-    shanice.parents = [ alexander, brianna ];
-
-    gerard.parents = [ cassandra, null ];
-    aurora.parents = [ cassandra, null ];
-    
-    john.parents = [ shanice, null ];
-
-    this.display.rootSim = alexander;
+    const input = '{"rootSim":"Bella1","familyName":"Goth","currentDay":120,"globalAgeSpans":[2,7,13,13,24,24,10],"sims":[{"id":"Bella1","name":"Bella Goth","birthday":1},{"id":"Alexander1","name":"Alexander Goth","birthday":38,"parents":["Bella1","Mortimer1"]},{"id":"Aurora1","name":"Aurora Magee","birthday":78,"parents":["Cassandra1"]},{"id":"Brianna1","name":"Brianna Talbert","birthday":39},{"id":"Carley1","name":"Carley Goth","birthday":86,"parents":["Alexander1","Brianna1"]},{"id":"Carlton1","name":"Carlton Goth","birthday":72,"parents":["Bella1","Nathan1"]},{"id":"Cassandra1","name":"Cassandra Magee","birthday":40,"parents":["Bella1","Mortimer1"]},{"id":"Elyse1","name":"Elyse Talbert","birthday":88,"parents":["Alexander1","Brianna1"]},{"id":"Gerard1","name":"Gerard Collins","birthday":76,"parents":["Cassandra1"]},{"id":"John1","name":"John Palmer","birthday":120,"parents":["Shanice1"]},{"id":"Mortimer1","name":"Mortimer Goth","birthday":1},{"id":"Nathan1","name":"Nathan Milan","birthday":1},{"id":"Shanice1","name":"Shanice Goth","birthday":84,"parents":["Alexander1","Brianna1"]}],"events":[{"type":"Birth","date":1,"sims":["Bella1"]},{"type":"Birth","date":1,"sims":["Mortimer1"]},{"type":"Birth","date":1,"sims":["Nathan1"]},{"type":"Marriage","date":36,"sims":["Bella1","Mortimer1"]},{"type":"Birth","date":38,"sims":["Alexander1"],"parents":["Bella1","Mortimer1"]},{"type":"Birth","date":39,"sims":["Brianna1"]},{"type":"Birth","date":40,"sims":["Cassandra1"],"parents":["Bella1","Mortimer1"]},{"type":"Marriage","date":70,"sims":["Bella1","Nathan1"]},{"type":"Birth","date":72,"sims":["Carlton1"],"parents":["Bella1","Nathan1"]},{"type":"Birth","date":76,"sims":["Gerard1"],"parents":["Cassandra1"]},{"type":"Birth","date":78,"sims":["Aurora1"],"parents":["Cassandra1"]},{"type":"Marriage","date":83,"sims":["Alexander1","Brianna1"]},{"type":"Birth","date":84,"sims":["Shanice1"],"parents":["Alexander1","Brianna1"]},{"type":"Birth","date":86,"sims":["Carley1"],"parents":["Alexander1","Brianna1"]},{"type":"Birth","date":88,"sims":["Elyse1"],"parents":["Alexander1","Brianna1"]},{"type":"Birth","date":120,"sims":["John1"],"parents":["Shanice1"]}]}';
+    this.display.onLoad(JSON.parse(input));
   }
 
   addSimKeyUp(event: KeyboardEvent) {
@@ -95,8 +45,7 @@ export class AppComponent implements OnInit {
     if (searchString && searchString.length >= 3) {
       this.foundIndex = 0;
       this.foundSims = this.display.sims.filter(t => t.name.toLowerCase().includes(searchString));
-      console.log(searchString);
-      console.log(this.foundSims);
+      
       if (this.foundSims.length > 0) {
         this.scrollToSim(this.foundSims[this.foundIndex].id);
       }
