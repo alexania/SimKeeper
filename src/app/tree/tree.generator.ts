@@ -316,7 +316,7 @@ export class TreeBuilder {
 
     // Compute the layout.
     //this.tree = d3.tree<Node>().nodeSize([nodeSize[0] * 2, opts.nodeHeightSeperation(nodeSize[0], nodeSize[1])]);
-    this.tree = d3.cluster<Node>().size([2 * Math.PI, (width / 2) - 100]);
+    this.tree = d3.cluster<Node>().size([2 * Math.PI, (width / 4) - 100]);
 
     // this.tree.separation(function separation(a, b) {
     //   if (a.data.hidden || b.data.hidden) {
