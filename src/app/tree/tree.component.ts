@@ -75,7 +75,9 @@ export class TreeComponent implements OnInit {
     }
 
     for (let event of this.display.events) {
-      if (event.type === EventType.Birth) {
+      if (event.type == EventType.Birth) {
+        event.parents.sort();
+
         let sim = event.sims[0];
         let simNode = nodes[sim.id];
 
@@ -86,6 +88,7 @@ export class TreeComponent implements OnInit {
         } else {
           let parentNode1: Node = null;
           let parentNode2: Node = null;
+
           if (sim.parents[0]) {
             parentNode1 = nodes[sim.parents[0].id];
             if (sim.parents[1]) {
@@ -96,6 +99,13 @@ export class TreeComponent implements OnInit {
           }
 
           if (parentNode2) {
+            if (parentNode1.noParent && !parentNode2.noParent)
+            {
+              let p = parentNode1;
+              parentNode1 = parentNode2;
+              parentNode2 = p;
+            }
+
             let marriage = parentNode1.marriages.find(t => t.spouse.stringId === parentNode2.stringId);
             if (!marriage) {
               marriage = parentNode2.marriages.find(t => t.spouse.stringId === parentNode1.stringId);

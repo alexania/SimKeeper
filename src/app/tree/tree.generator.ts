@@ -18,6 +18,11 @@ export class Node {
 
   public marriageNode: Node;
 
+  public width: number;
+  public height: number;
+
+  public parent = null;
+
   public constructor(name: string, id: number = 0, hidden = false, noParent = false) {
     this.id = id;
     this.name = name;
@@ -100,8 +105,12 @@ export class Tree {
   public siblings: Link[] = [];
   public options: TreeOptions;
 
+  public processedNodes: { [id: string]: Node } = {};
+
   public constructor(data: Node[], options: TreeOptions) {
     var processedData = this.preprocess(data, options);
+    console.log(processedData.root);
+
     var treeBuilder = new TreeBuilder(processedData.root, processedData.siblings, options);
     treeBuilder.create();
   }
@@ -127,61 +136,107 @@ export class Tree {
   }
 
   private reconstructTree(person: Node, parent: Node) {
-    const node = new Node(person.name, this.incrementIndex(person.name));
-    node.extra = person.extra;
-    node.textClass = person.textClass || this.options.styles.text;
-    node["class"] = person["class"] || this.options.styles.node;
+    let node = this.processedNodes[person.stringId];
 
-    // hide linages to the hidden root node
-    if (parent == this.root) {
-      node.noParent = true;
+    if (node && node.parent && node.marriageNode) {
+      const i = node.parent.children.indexOf(node);
+      if (i > -1) {
+        console.log("Reconstruct person", node.name, node);
+        node.parent.children.splice(i, 1);
+        node.parent = null;
+        node.noParent = false;
+      }
     }
 
-    // apply depth offset
-    // for (let i = 0; i < person.depthOffset; i++) {
-    //   const pushNode = new Node("", this.numNodes++, true, person.noParent);
-    //   parent.children.push(pushNode);
-    //   parent = pushNode;
-    // }
+    if (!node || !node.parent) {
+      if (!node) {
+        node = new Node(person.name, this.incrementIndex(person.name));
+        node.extra = person.extra;
+        node.textClass = person.textClass || this.options.styles.text;
+        node["class"] = person["class"] || this.options.styles.node;
+        this.processedNodes[person.stringId] = node;
+        node.parent = parent;
+      }
 
-    // sort children
-    this.sortPersons(person.children);
+      // hide linages to the hidden root node
+      if (parent == this.root) {
+        node.noParent = true;
+      }
 
-    // add "direct" children
-    for (let child of person.children) {
-      this.reconstructTree(child, node);
-    }
-    parent.children.push(node);
+      // apply depth offset
+      // for (let i = 0; i < person.depthOffset; i++) {
+      //   const pushNode = new Node("", this.numNodes++, true, person.noParent);
+      //   parent.children.push(pushNode);
+      //   parent = pushNode;
+      // }
 
-    //sort marriages
-    this.sortMarriages(person.marriages);
+      // sort children
+      this.sortPersons(person.children);
 
-    // go through marriage
-    let i = 0;
+      // add "direct" children
+      for (let child of person.children) {
+        this.reconstructTree(child, node);
+      }
 
-    for (let marriage of person.marriages) {
-      const m = new Node("", this.incrementIndex("Marriage"), true, true);
-      m.extra = marriage.extra;
+      //sort marriages
+      this.sortMarriages(person.marriages);
 
-      const sp = marriage.spouse;
+      // go through marriage
+      let i = 0;
 
-      const spouse = new Node(sp.name, this.incrementIndex(sp.name));
-      spouse.noParent = true;
-      spouse.textClass = spouse.textClass || this.options.styles.text;
-      spouse["class"] = spouse["class"] || this.options.styles.node;
-      spouse.marriageNode = m;
+      for (let marriage of person.marriages) {
+        const m = new Node("Marriage", this.incrementIndex("Marriage"), true, true);
+        m.extra = marriage.extra;
 
-      parent.children.push(m);
-      parent.children.push(spouse);
+        const sp = marriage.spouse;
 
-      this.sortPersons(marriage.children);
+        if (i > 0) {
+          parent.children.push(m);
+        }
+        const spouse = this.reconstructTree(sp, parent);
+        // const spouse = new Node(sp.name, this.incrementIndex(sp.name));
+        // spouse.noParent = true;
+        // spouse.textClass = spouse.textClass || this.options.styles.text;
+        // spouse["class"] = spouse["class"] || this.options.styles.node;
+        spouse.noParent = true;
+        spouse.marriageNode = m;
+        m.stringId = "m_" + node.id + "_" + spouse.id;
 
-      marriage.children.forEach(t => this.reconstructTree(t, m));
-      this.siblings.push({
-        source: node.id,
-        target: spouse.id,
-        number: i++
-      })
+        if (i === 0) {
+          parent.children.push(m);
+          parent.children.push(node);
+        }
+
+        // if (parent.children.indexOf(spouse) === -1) {
+        //   parent.children.push(spouse);
+        // }
+
+        this.sortPersons(marriage.children);
+
+        marriage.children.forEach(t => this.reconstructTree(t, m));
+
+        if (i === 0) {
+          this.siblings.push({
+            source: spouse.id,
+            target: node.id,
+            number: i++
+          })
+        } else {
+          this.siblings.push({
+            source: node.id,
+            target: spouse.id,
+            number: i++
+          })
+        }
+      }
+
+      if (i === 0) {
+        parent.children.push(node);
+      }
+
+      return node;
+    } else {
+      return this.processedNodes[person.stringId];
     }
   }
 
@@ -274,7 +329,7 @@ export class TreeBuilder {
   }
 
   public static nodeHeightSeperation(nodeWidth: number, nodeMaxHeight: number) {
-    return nodeMaxHeight + 25;
+    return nodeMaxHeight + 50;
   }
 
   public static getNodeSize(nodes: HierarchyNode<Node>[], width: number, textRenderer): [number, number] {
@@ -297,12 +352,12 @@ export class TreeBuilder {
       tmpSvg.removeChild(container);
 
       maxHeight = Math.max(maxHeight, height);
-      // n.cHeight = height;
-      // if (n.data.hidden) {
-      //   n.cWidth = 0;
-      // } else {
-      //   n.cWidth = width;
-      // }
+      n.data.height = height;
+      if (n.data.hidden) {
+        n.data.width = 0;
+      } else {
+        n.data.width = width;
+      }
     });
     document.body.removeChild(tmpSvg);
 
@@ -336,7 +391,7 @@ export class TreeBuilder {
     var nodeSize = this.nodeSize;
 
     var treenodes = this.tree(source);
-    
+
     var links = treenodes.links();
 
     // Create the link lines.
@@ -363,10 +418,13 @@ export class TreeBuilder {
 
     // Create the node rectangles.
     nodes.append('foreignObject').filter((d: any) => !d.data.hidden)
-      .attr('x', function(d:any) { return Math.round(d.x - (9 * d.data.name.length) / 2) + 'px'; })
-      .attr('y', (d: any) => Math.round(d.y - 20 / 2) + 'px')
-      .attr('width', (d: any) => 9 * d.data.name.length + 'px')
-      .attr('height', (d: any) => 20 + 'px')
+      .attr('x', function (d: any) {
+        let x = Math.round(d.x - d.data.width / 2);
+        return x + 'px';
+      })
+      .attr('y', (d: any) => Math.round(d.y - d.data.height / 2) + 'px')
+      .attr('width', (d: any) => d.data.width + 'px')
+      .attr('height', (d: any) => d.data.height + 'px')
       .attr('class', 'node')
       .attr('id', (d: any) => d.id)
       .html((d: any) => opts.nodeRenderer(d.data.name, d.x, d.y, nodeSize[0], nodeSize[1], d.data.extra, d.data.id, d.data['class'], d.data.textClass, opts.textRenderer))
@@ -389,7 +447,7 @@ export class TreeBuilder {
     if (d.target.data.noParent) {
       return 'M0,0L0,0';
     }
-    var ny = Math.round(d.target.y + (d.source.y - d.target.y) * 0.50);
+    var ny = Math.round(d.target.y + (d.source.y - d.target.y) * 0.33);
 
     var linedata: [number, number][] = [
       [d.target.x, d.target.y],
@@ -438,16 +496,16 @@ export class TreeBuilder {
     var nodeHeight = this.nodeSize[1];
 
     // Not first marriage
-    if (d.number > 0) {
-      ny -= Math.round(nodeHeight * 8 / 10);
+    if (d.number > 1) {
+      ny += Math.round(nodeHeight);
     }
 
     var linedata: [number, number][] = [
       [d.source.x, d.source.y],
       [Math.round(d.source.x + nodeWidth * 6 / 10), d.source.y],
       [Math.round(d.source.x + nodeWidth * 6 / 10), ny],
-      [d.target.marriageNode.x - nodeWidth * 6 / 10, ny],
-      [d.target.marriageNode.x - nodeWidth * 6 / 10, d.target.y],
+      [d.target.marriageNode.x - nodeWidth * 2 / 10, ny],
+      [d.target.marriageNode.x - nodeWidth * 2 / 10, d.target.y],
       [d.target.x, d.target.y]
     ];
 
