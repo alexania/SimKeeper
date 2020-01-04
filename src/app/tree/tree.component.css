@@ -48,17 +48,13 @@
   font: 10px sans-serif;
 }
 
-#tree-container .node--internal circle {
-  fill: #555;
-}
-
-#tree-container .node--internal text {
-  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
-}
-
 #tree-container .link {
   fill: none;
   stroke: #555;
   stroke-opacity: 0.4;
   stroke-width: 1.5px;
+}
+
+#tree-container line.child {
+  stroke-dasharray: 5,5;
 }
