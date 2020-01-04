@@ -315,15 +315,16 @@ export class TreeBuilder {
       .attr('transform', 'translate(' + width / 2 + ',' + opts.margin.top + ')');
 
     // Compute the layout.
-    this.tree = d3.tree<Node>().nodeSize([nodeSize[0] * 2, opts.nodeHeightSeperation(nodeSize[0], nodeSize[1])]);
+    //this.tree = d3.tree<Node>().nodeSize([nodeSize[0] * 2, opts.nodeHeightSeperation(nodeSize[0], nodeSize[1])]);
+    this.tree = d3.cluster<Node>().size([2 * Math.PI, (width / 2) - 100]);
 
-    this.tree.separation(function separation(a, b) {
-      if (a.data.hidden || b.data.hidden) {
-        return 0.4;
-      } else {
-        return 0.6;
-      }
-    });
+    // this.tree.separation(function separation(a, b) {
+    //   if (a.data.hidden || b.data.hidden) {
+    //     return 0.4;
+    //   } else {
+    //     return 0.6;
+    //   }
+    // });
 
     this.update(this.root);
   }
@@ -391,56 +392,127 @@ export class TreeBuilder {
     var nodeSize = this.nodeSize;
 
     var treenodes = this.tree(source);
-
-    var links = treenodes.links();
+    console.log(treenodes.descendants());
 
     // Create the link lines.
-    this.svg.selectAll('.link').data(links).enter()
-      // filter links with no parents to prevent empty nodes
-      .filter(function (l) {
-        return !l.target.data.noParent;
-      }).append('path')
-      .attr('class', opts.styles.linage)
-      .attr('d', this.elbow);
+    // this.svg.selectAll('.link').data(links).enter()
+    //   // filter links with no parents to prevent empty nodes
+    //   .filter(function (l) {
+    //     return !l.target.data.noParent;
+    //   }).append('path')
+    //   .attr('class', opts.styles.linage)
+    //   .attr('d', this.elbow);
 
-    var nodes = this.svg.selectAll('.node')
-      .data(treenodes.descendants())
+    const link = this.svg.append("g")
+      .attr("fill", "none")
+      .attr("stroke", "#555")
+      .attr("stroke-opacity", 0.4)
+      .attr("stroke-width", 1.5)
+      .attr("stroke-dasharray", "4,4")
+      .selectAll("path")
+      .data(treenodes.links())
       .enter();
+
+    const visibleLink = link.filter(function (d: any) {
+      return !d.target.data.noParent;
+    });
+
+    visibleLink.append("line")
+      .attr("class", "link")
+      .attr("x1", function (d: any) { return this.radialPoint(d.source.x, d.source.y)[0]; }.bind(this))
+      .attr("y1", function (d: any) { return this.radialPoint(d.source.x, d.source.y)[1]; }.bind(this))
+      .attr("x2", function (d: any) { return this.radialPoint(d.target.x, d.target.y)[0]; }.bind(this))
+      .attr("y2", function (d: any) { return this.radialPoint(d.target.x, d.target.y)[1]; }.bind(this));
+    // visibleLink.append("path")
+    //   .attr("d", d3.linkRadial()
+    //     .angle((d: any) => d.x)
+    //     .radius((d: any) => d.y));
+
+    const node = this.svg.append("g")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-width", 3)
+      .selectAll("g")
+      .data(treenodes.descendants())
+      .enter().append("g")
+      .attr("transform", (d: any) => `
+      rotate(${d.x * 180 / Math.PI - 90})
+      translate(${d.y},0)
+    `);
 
     this.linkSiblings();
 
     // Draw siblings (marriage)
     this.svg.selectAll('.sibling')
       .data(this.links)
-      .enter().append('path')
-      .attr('class', opts.styles.marriage)
-      .attr('d', this.siblingLine.bind(this));
+      .enter().append("line")
+      .attr("class", "link")
+      .attr("fill", "none")
+      .attr("stroke", "#555")
+      .attr("stroke-opacity", 0.4)
+      .attr("stroke-width", 1.5)
+      .attr("x1", function (d: any) { return this.radialPoint(d.source.x, d.source.y)[0]; }.bind(this))
+      .attr("y1", function (d: any) { return this.radialPoint(d.source.x, d.source.y)[1]; }.bind(this))
+      .attr("x2", function (d: any) { return this.radialPoint(d.target.x, d.target.y)[0]; }.bind(this))
+      .attr("y2", function (d: any) { return this.radialPoint(d.target.x, d.target.y)[1]; }.bind(this));
+
+    // this.svg.selectAll('.sibling')
+    //   .data(this.links)
+    //   .enter().append('path')
+    //   .attr("fill", "none")
+    //   .attr("stroke", "#555")
+    //   .attr("stroke-opacity", 0.4)
+    //   .attr("stroke-width", 1.5)
+    //   .attr("d", d3.linkRadial()
+    //     .angle((d: any) => d.x)
+    //     .radius((d: any) => d.y));
+
+
+    const visibleNode = node.filter(function (d: any) { return !d.data.hidden; });
+
+    visibleNode.append("circle")
+      .attr("fill", (d: any) => d.children ? "#555" : "#999")
+      .attr("r", 2.5);
+
+    visibleNode.append("text")
+      .attr("dy", "0.31em")
+      .attr("x", (d: any) => d.x < Math.PI === !d.children ? 6 : -6)
+      .attr("text-anchor", (d: any) => d.x < Math.PI === !d.children ? "start" : "end")
+      .attr("transform", (d: any) => d.x >= Math.PI ? "rotate(180)" : null)
+      .text((d: any) => d.data.name)
+      .filter((d: any) => d.children)
+      .clone(true).lower()
+      .attr("stroke", "white");
+
 
     // Create the node rectangles.
-    nodes.append('foreignObject').filter((d: any) => !d.data.hidden)
-      .attr('x', function (d: any) {
-        let x = Math.round(d.x - d.data.width / 2);
-        return x + 'px';
-      })
-      .attr('y', (d: any) => Math.round(d.y - d.data.height / 2) + 'px')
-      .attr('width', (d: any) => d.data.width + 'px')
-      .attr('height', (d: any) => d.data.height + 'px')
-      .attr('class', 'node')
-      .attr('id', (d: any) => d.id)
-      .html((d: any) => opts.nodeRenderer(d.data.name, d.x, d.y, nodeSize[0], nodeSize[1], d.data.extra, d.data.id, d.data['class'], d.data.textClass, opts.textRenderer))
-      .on('click', function (d: any) {
-        if (d.data.hidden) {
-          return;
-        }
-        opts.nodeClick(d.data.name, d.data.extra, d.data.id);
-      })
-      .on('contextmenu', function (d: any) {
-        if (d.data.hidden) {
-          return;
-        }
-        d3.event.preventDefault();
-        opts.nodeRightClick(d.data.name, d.data.extra, d.data.id);
-      });
+    //nodes.append('foreignObject').filter((d: any) => !d.data.hidden)
+    // .attr('x', function (d: any) {
+    //   let x = Math.round(d.x - d.data.width / 2);
+    //   return x + 'px';
+    // })
+    // .attr('y', (d: any) => Math.round(d.y - d.data.height / 2) + 'px')
+    // .attr('width', (d: any) => d.data.width + 'px')
+    // .attr('height', (d: any) => d.data.height + 'px')
+    // .attr('class', 'node')
+    // .attr('id', (d: any) => d.id)
+    // .html((d: any) => opts.nodeRenderer(d.data.name, d.x, d.y, nodeSize[0], nodeSize[1], d.data.extra, d.data.id, d.data['class'], d.data.textClass, opts.textRenderer))
+    // .on('click', function (d: any) {
+    //   if (d.data.hidden) {
+    //     return;
+    //   }
+    //   opts.nodeClick(d.data.name, d.data.extra, d.data.id);
+    // })
+    // .on('contextmenu', function (d: any) {
+    //   if (d.data.hidden) {
+    //     return;
+    //   }
+    //   d3.event.preventDefault();
+    //   opts.nodeRightClick(d.data.name, d.data.extra, d.data.id);
+    // });
+  }
+
+  private radialPoint(x: number, y: number) {
+    return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
   }
 
   private elbow(d: any) {
@@ -471,21 +543,36 @@ export class TreeBuilder {
       const start = allNodes.find(t => +d.source === t.data.id) as HierarchyPointNode<Node>;
       const end = allNodes.find(t => +d.target === t.data.id) as HierarchyPointNode<Node>;
 
-      const link = {
-        source: { id: d.source, x: start.x, y: start.y, marriageNode: null },
-        target: { id: d.target, x: end.x, y: end.y, marriageNode: null },
-        number: d.number
-      };
+      console.log(`${start.data.name}_${end.data.name}`);
+
+
+
+      // const link = {
+      //   source: { id: d.source, x: start.x, y: start.y, marriageNode: null },
+      //   target: { id: d.target, x: end.x, y: end.y, marriageNode: null },
+      //   number: d.number
+      // };
 
       const marriageId = start.data.marriageNode != null ? start.data.marriageNode.id : end.data.marriageNode.id;
       const marriageNode = allNodes.find(function (n) {
         return n.data.id == marriageId;
-      });
+      }) as HierarchyPointNode<Node>;
 
-      link.source.marriageNode = marriageNode;
-      link.target.marriageNode = marriageNode;
+      const link1 = {
+        source: { id: start.id, x: start.x, y: start.y },
+        target: { id: marriageNode.id, x: marriageNode.x, y: marriageNode.y }
+      };
+      this.links.push(link1 as unknown as HierarchyPointLink<Node>);
+      const link2 = {
+        source: { id: marriageNode.id, x: marriageNode.x, y: marriageNode.y },
+        target: { id: end.id, x: end.x, y: end.y }
+      };
+      this.links.push(link2 as unknown as HierarchyPointLink<Node>);
 
-      this.links.push(link as unknown as HierarchyPointLink<Node>);
+      // link.source.marriageNode = marriageNode;
+      // link.target.marriageNode = marriageNode;
+
+      // this.links.push(link as unknown as HierarchyPointLink<Node>);
     }
   }
 
