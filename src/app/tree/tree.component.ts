@@ -37,7 +37,6 @@ export class TreeComponent implements OnInit {
 
   ngAfterViewInit() {
     const data = this.createTreeData();
-    console.log("Data", data);
     this.createTree(data);
   }
 
@@ -124,6 +123,19 @@ export class TreeComponent implements OnInit {
               parent1Node.spouses.push(parent2Node);
               parent2Node.spouses.push(parent1Node);
             }
+          }
+        }
+      } else if (event.type === EventType.Marriage) {
+        const spouse1 = event.sims[0];
+        const spouse2 = event.sims.length > 1 ? event.sims[1] : null;
+
+        if (spouse1 && spouse2) {
+          const spouse1Node = nodes[spouse1.id];
+          const spouse2Node = nodes[spouse2.id];
+
+          if (spouse1Node.spouses.indexOf(spouse2Node) === -1) {
+            spouse1Node.spouses.push(spouse2Node);
+            spouse2Node.spouses.push(spouse1Node);
           }
         }
       }

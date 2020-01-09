@@ -1,4 +1,4 @@
-import { TreeBuilder } from './tree.generator';
+import { TreeBuilder } from './treeBuilder.generator';
 
 export class TreeOptions {
   public target = "#graph";
