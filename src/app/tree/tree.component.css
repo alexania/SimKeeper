@@ -45,9 +45,10 @@
   stroke: #000;
 }
 
-#tree-container .marriage {
+#tree-container path.marriage {
   fill: none;
   stroke: black;
+  stroke-dasharray: 4,4;
 }
 
 #tree-container .node {

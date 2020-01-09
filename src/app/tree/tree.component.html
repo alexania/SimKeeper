@@ -5,7 +5,7 @@
     <div *ngIf="display.sims.length === 0">There are no Sims to draw a tree for!</div>
     <div *ngIf="display.sims.length > 0">
     <label for="tree-root">Display Tree For:</label>
-    <select [value]="display.rootSim.id">
+    <select [value]="display.rootSim.id" (change)="changeFocus($event.target)">
       <option *ngFor="let option of display.sims" [value]="option.id">{{ option.name }}</option>
     </select>
     <div id="tree" #tree></div>
