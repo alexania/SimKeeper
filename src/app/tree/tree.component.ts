@@ -11,7 +11,7 @@ import {
 
 import { Display } from "../shared/display.model";
 import { EventType } from "../shared/enums";
-import { Tree, InitialNode } from "./tree.generator";
+import { Tree, Node, InitialNode } from "./tree.generator";
 import { TreeOptions } from "./treeOptions.model";
 
 @Component({
@@ -55,9 +55,10 @@ export class TreeComponent implements OnInit {
       debug: true,
       height: height,
       width: width,
-      nodeClick: function(name, extra, id) {
-        console.log(name);
-      },
+      nodeClick: function(node: Node) {
+        this.focusId = node.simId;
+        this.tree.changeFocus(node.simId);
+      }.bind(this),
       textRenderer: function(name, extra, textClass) {
         // THis callback is optinal but can be used to customize
         // how the text is rendered without having to rewrite the entire node
@@ -81,7 +82,7 @@ export class TreeComponent implements OnInit {
         let node = "";
         node += "<div ";
         node += 'style="height:100%;width:100%;" ';
-        node += 'id="' + id + '">\n';
+        node += 'class="' + nodeClass + '" id="' + id + '">\n';
         node += textRenderer(name, extra, textClass);
         node += "</div>";
         return node;

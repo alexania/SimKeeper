@@ -1,4 +1,5 @@
 import { TreeBuilder } from './treeBuilder.generator';
+import { Node } from './tree.generator';
 
 export class TreeOptions {
   public target = "#graph";
@@ -10,9 +11,7 @@ export class TreeOptions {
     Object.assign(this, init);
   }
 
-  public nodeClick = function nodeClick(name, extra, id) {};
-
-  public nodeRightClick = function nodeRightClick(name, extra, id) {};
+  public nodeClick = function nodeClick(node: Node) {};
 
   public nodeHeightSeperation = function nodeHeightSeperation(
     nodeWidth,

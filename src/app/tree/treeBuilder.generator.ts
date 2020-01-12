@@ -1,11 +1,14 @@
-import { TreeLayout, HierarchyNode, HierarchyPointLink, HierarchyPointNode } from 'd3';
+import { TreeLayout, HierarchyNode, HierarchyPointLink, HierarchyPointNode, ZoomBehavior } from 'd3';
 import { Link, Node } from './tree.generator';
 import { TreeOptions } from './treeOptions.model';
 import * as d3 from 'd3';
 
 export class TreeBuilder {
   public svg: any;
+  public g: any;
   public tree: TreeLayout<Node>;
+
+  public zoom: ZoomBehavior<Element, unknown>;
 
   public root: HierarchyNode<Node>;
   public links: HierarchyPointLink<Node>[];
@@ -16,12 +19,15 @@ export class TreeBuilder {
   public allNodes: HierarchyNode<Node>[];
 
   public nodeSize: [number, number];
+  public focusId: string;
 
   public constructor(
+    focusId: string,
     root: HierarchyNode<Node>,
     siblings: Link[],
     options: TreeOptions
   ) {
+    this.focusId = focusId;
     this.root = root;
     this.links = [];
 
@@ -65,28 +71,21 @@ export class TreeBuilder {
     const width = opts.width + opts.margin.left + opts.margin.right;
     const height = opts.height + opts.margin.top + opts.margin.bottom;
 
-    const zoom = d3
-      .zoom()
+    this.zoom = d3.zoom()
       .scaleExtent([0.1, 10])
-      .on("zoom", function() {
-        svg.attr(
-          "transform",
-          d3.event.transform.translate(width / 2, opts.margin.top)
-        );
-      });
+      .on("zoom", function () {
+        this.g.attr("transform", d3.event.transform);
+      }.bind(this));
 
     //make an SVG
-    const svg = (this.svg = d3
+    this.svg = d3
       .select(opts.target)
       .append("svg")
       .attr("width", width)
       .attr("height", height)
-      .call(zoom)
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" + width / 2 + "," + opts.margin.top + ")"
-      ));
+      .call(this.zoom);
+
+    this.g = this.svg.append("g");
 
     // Compute the layout.
     this.tree = d3
@@ -121,7 +120,7 @@ export class TreeBuilder {
     var tmpSvg = document.createElement("svg");
     document.body.appendChild(tmpSvg);
 
-    nodes.map(function(n) {
+    nodes.map(function (n) {
       var container = document.createElement("div");
       container.setAttribute("class", n.data["class"]);
       container.style.visibility = "hidden";
@@ -185,24 +184,32 @@ export class TreeBuilder {
 
     var treenodes = this.tree(source);
 
+    const focus = this.allNodes.find(t => t.data.nodeId === this.focusId) as HierarchyPointNode<Node>;
+    if (focus) {
+      //console.log(opts);
+      //console.log(focus.x + ", "+ focus.y);
+      this.svg.transition().duration(750).call(this.zoom.transform, d3.zoomIdentity.translate(opts.width / 2 - focus.x, opts.height / 2 - focus.y));
+    }
+
     var links = treenodes.links();
 
     // Create the link lines.
-    this.svg.selectAll("path").remove();
-    this.svg.selectAll("foreignObject").remove();
-    this.svg
+    this.g.selectAll("path").remove();
+    this.g.selectAll("foreignObject").remove();
+    
+    this.g
       .selectAll(".link")
       .data(links)
       .enter()
       // filter links with no parents to prevent empty nodes
-      .filter(function(l) {
+      .filter(function (l) {
         return !l.target.data.noParent;
       })
       .append("path")
       .attr("class", opts.styles.linage)
       .attr("d", this.elbow);
 
-    var nodes = this.svg
+    var nodes = this.g
       .selectAll(".node")
       .data(treenodes.descendants())
       .enter();
@@ -210,7 +217,7 @@ export class TreeBuilder {
     this.linkSiblings();
 
     // Draw siblings (marriage)
-    this.svg
+    this.g
       .selectAll(".sibling")
       .data(this.links)
       .enter()
@@ -222,7 +229,7 @@ export class TreeBuilder {
     nodes
       .append("foreignObject")
       .filter((d: any) => !d.data.hidden)
-      .attr("x", function(d: any) {
+      .attr("x", function (d: any) {
         let x = Math.round(d.x - d.data.width / 2);
         return x + "px";
       })
@@ -240,23 +247,16 @@ export class TreeBuilder {
           nodeSize[1],
           d.data.extra,
           d.data.id,
-          d.data["class"],
+          d.data.nodeId === this.focusId ? "focused" : "",
           d.data.textClass,
           opts.textRenderer
         )
       )
-      .on("click", function(d: any) {
+      .on("click", function (d: HierarchyPointNode<Node>) {
         if (d.data.hidden) {
           return;
         }
-        opts.nodeClick(d.data.name, d.data.extra, d.data.id);
-      })
-      .on("contextmenu", function(d: any) {
-        if (d.data.hidden) {
-          return;
-        }
-        d3.event.preventDefault();
-        opts.nodeRightClick(d.data.name, d.data.extra, d.data.id);
+        opts.nodeClick(d.data);
       });
   }
 
@@ -299,7 +299,7 @@ export class TreeBuilder {
         start.data.marriageNode != null
           ? start.data.marriageNode.id
           : end.data.marriageNode.id;
-      const marriageNode = allNodes.find(function(n) {
+      const marriageNode = allNodes.find(function (n) {
         return n.data.id == marriageId;
       });
 

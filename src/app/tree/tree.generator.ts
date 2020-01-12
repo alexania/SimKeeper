@@ -5,7 +5,8 @@ import { TreeBuilder } from './treeBuilder.generator';
 export class Node {
   public id: number;
 
-  public stringId: string;
+  public simId: string;
+  public nodeId: string;
   public name: string;
 
   public children: Node[] = [];
@@ -24,14 +25,16 @@ export class Node {
   public parent: Node = null;
 
   public constructor(
-    stringId: string,
+    nodeId: string,
+    simId: string,
     name: string,
     id: number = 0,
     hidden = false,
     noParent = false
   ) {
     this.id = id;
-    this.stringId = stringId;
+    this.nodeId = nodeId;
+    this.simId = simId;
     this.name = name;
 
     this.hidden = hidden;
@@ -81,6 +84,7 @@ export class Tree {
     var processedData = this.preprocess(data, focusId, options);
 
     this.treeBuilder = new TreeBuilder(
+      focusId,
       processedData.root,
       processedData.siblings,
       options
@@ -98,6 +102,7 @@ export class Tree {
       siblings: this.siblings
     };
 
+    this.treeBuilder.focusId = id;
     this.treeBuilder.root = processedData.root;
     this.treeBuilder.siblings = processedData.siblings;
     this.treeBuilder.recreate();
@@ -115,7 +120,7 @@ export class Tree {
     this.numNodes = 0;
     this.data = data;
 
-    this.root = new Node("root", "", this.incrementIndex());
+    this.root = new Node("root", "", "", this.incrementIndex());
     this.root.hidden = true;
 
     this.options = options;
@@ -135,6 +140,7 @@ export class Tree {
     let ancestors: InitialNode[] = [];
 
     this.findAncestors(focus, ancestors, []);
+    console.log(focusId, ancestors.map(t => t.id));
     ancestors.forEach(t => this.reconstructTree(t, null));
   }
 
@@ -166,19 +172,19 @@ export class Tree {
   private reconstructTree(person: InitialNode, parent: Node) {
     let node = this.processedNodes[person.id];
     if (!node) {
-      node = new Node(person.id, person.name, this.incrementIndex());
+      node = new Node(person.id, person.id, person.name, this.incrementIndex());
       node.extra = person.extra;
       node.textClass = person.textClass || this.options.styles.text;
       node["class"] = person["class"] || this.options.styles.node;
 
-      this.processedNodes[node.stringId] = node;
+      this.processedNodes[node.nodeId] = node;
     }
 
     node.parent = parent || this.root;
     if (node.parent == this.root) {
       node.noParent = true;
     }
-    if (!node.parent.children.find(t => t.stringId === node.stringId)) {
+    if (!node.parent.children.find(t => t.nodeId === node.nodeId)) {
       node.parent.children.push(node);
     }
 
@@ -194,25 +200,26 @@ export class Tree {
 
         let spouse = this.processedNodes["sp_" + mId]
         if (!m) {
-          m = new Node("m_" + mId, "Marriage", this.incrementIndex(), true, true);
-          this.processedNodes[m.stringId] = m;
+          m = new Node("m_" + mId, "", "", this.incrementIndex(), true, true);
+          this.processedNodes[m.nodeId] = m;
 
           spouse = new Node(
             "sp_" + mId,
+            otherParent.id,
             otherParent.name,
             this.incrementIndex()
           );
           spouse.noParent = true;
           spouse.textClass = spouse.textClass || this.options.styles.text;
           spouse["class"] = spouse["class"] || this.options.styles.node;
-          this.processedNodes[spouse.stringId] = spouse;
+          this.processedNodes[spouse.nodeId] = spouse;
           spouse.marriageNode = m;
         }
 
-        if (!node.parent.children.find(t => t.stringId === m.stringId)) {
+        if (!node.parent.children.find(t => t.nodeId === m.nodeId)) {
           node.parent.children.push(m);
         }
-        if (!node.parent.children.find(t => t.stringId === spouse.stringId)) {
+        if (!node.parent.children.find(t => t.nodeId === spouse.nodeId)) {
           node.parent.children.push(spouse);
         }
 

@@ -56,6 +56,11 @@
   border-style: solid;
   border-width: 1px;
   box-sizing: border-box;
+  cursor: pointer;
+}
+
+#tree-container .node .focused {
+  background-color: #99d5ff;
 }
 
 #tree-container .emphasis{
