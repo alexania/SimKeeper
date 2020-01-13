@@ -24,6 +24,8 @@ export class TreeComponent implements OnInit {
   @ViewChild("tree", { static: false }) treeElement: ElementRef;
   @Output() treeClosed = new EventEmitter();
   @Input() display: Display;
+  
+  public focusId: string;
 
   private margin = { top: 40, right: 20, bottom: 30, left: 40 };
   private focusId: string;
