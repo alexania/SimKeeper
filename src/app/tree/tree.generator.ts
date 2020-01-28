@@ -236,6 +236,46 @@ export class Tree {
         this.reconstructTree(child, node);
       }
     }
+
+    for (let spouse of person.spouses) {
+      let mId = person.id + "_" + spouse.id;
+      let m = this.processedNodes["m_" + mId];
+
+      let spouseNode = this.processedNodes["sp_" + mId];
+
+      if (!m) {
+        m = new Node("m_" + mId, "", "", this.incrementIndex(), true, true);
+        this.processedNodes[m.nodeId] = m;
+
+        spouseNode = new Node(
+          "sp_" + mId,
+          spouse.id,
+          spouse.name,
+          this.incrementIndex()
+        );
+        spouseNode.noParent = true;
+        spouseNode.textClass = spouseNode.textClass || this.options.styles.text;
+        spouseNode["class"] = spouseNode["class"] || this.options.styles.node;
+        this.processedNodes[spouseNode.nodeId] = spouseNode;
+        spouseNode.marriageNode = m;
+
+        if (!node.parent.children.find(t => t.nodeId === m.nodeId)) {
+          node.parent.children.push(m);
+        }
+        if (!node.parent.children.find(t => t.nodeId === spouseNode.nodeId)) {
+          node.parent.children.push(spouseNode);
+        }
+
+        if (!this.siblings.find(t => t.source === node.id && t.target === spouseNode.id)) {
+          this.siblings.push({
+            source: node.id,
+            target: spouseNode.id,
+            number: i++
+          });
+        }
+      }
+    }
+
     return node;
   }
 

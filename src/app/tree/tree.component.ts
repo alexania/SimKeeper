@@ -28,7 +28,6 @@ export class TreeComponent implements OnInit {
   public focusId: string;
 
   private margin = { top: 40, right: 20, bottom: 30, left: 40 };
-  private focusId: string;
   private tree: Tree;
 
   constructor() {}
@@ -101,11 +100,22 @@ export class TreeComponent implements OnInit {
     }
 
     for (let event of this.display.events) {
-      if (event.type == EventType.Birth) {
+      if (event.type === EventType.Birth || event.type === EventType.Adopt) {
         event.parents.sort();
 
         let sim = event.sims[0];
         let simNode = nodes[sim.id];
+
+        if (simNode.parents.length > 0) {
+          if (event.type === EventType.Birth) {
+            continue;
+          } else {
+            for (let parent of simNode.parents) {
+              parent.children.splice(parent.children.indexOf(simNode), 1);
+            }
+            simNode.parents = [];
+          }
+        }
 
         let parent1 = event.parents[0] || event.parents[1];
         let parent2 = parent1 ? event.parents[1] : null;
